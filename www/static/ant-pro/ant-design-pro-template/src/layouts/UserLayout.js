@@ -25,15 +25,15 @@ const links = [
 
 const copyright = <div>Copyright
   <Icon type="copyright"/>
-  2018 好雨科技</div>;
+  2018 科技公司</div>;
 
 class UserLayout extends React.PureComponent {
   getPageTitle() {
     const {routerData, location} = this.props;
     const {pathname} = location;
-    let title = '好雨云帮 | 应用一键部署';
+    let title = '云平台';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 好雨云帮 | 应用一键部署`;
+      title = `${routerData[pathname].name} - 云平台`;
     }
     return title;
   }
