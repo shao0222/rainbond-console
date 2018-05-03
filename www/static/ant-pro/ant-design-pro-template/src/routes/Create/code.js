@@ -61,7 +61,7 @@ export default class Main extends PureComponent {
     ];
 
     if (rainbondUtil.gitlabEnable(rainbondInfo)) {
-      tabList.push({key: 'goodrain', tab: '好雨代码仓库'})
+      tabList.push({key: 'goodrain', tab: '代码仓库'})
     }
 
     if (rainbondUtil.githubEnable(rainbondInfo)) {
