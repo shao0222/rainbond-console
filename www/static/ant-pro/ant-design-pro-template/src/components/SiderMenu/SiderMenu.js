@@ -311,7 +311,7 @@ export default class SiderMenu extends PureComponent {
         className={styles.sider}>
         <div className={styles.logo} key="logo">
           <Link to={`/team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/index`}>
-            <img src={logo} alt="logo"/>
+            <img style={{width: '70%'}} src={"https://static.goodrain.com/tmp/easytimelogo.png"} alt="logo"/>
             <h1>好雨云帮</h1>
           </Link>
         </div>
