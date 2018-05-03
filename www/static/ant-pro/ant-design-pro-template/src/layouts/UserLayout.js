@@ -67,7 +67,7 @@ class UserLayout extends React.PureComponent {
                     display: 'inline-block',
                     verticalAlign: 'middle',
                     marginBottom: 0
-                  }}>好雨云帮</h1>
+                  }}>云平台</h1>
                 </Link>
               </div>
               <div className={styles.desc}>无服务器PaaS、以应用为中心、软件定义一切</div>
