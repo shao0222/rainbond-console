@@ -235,7 +235,7 @@ export default class GlobalHeader extends PureComponent {
                 </div>
 
                 <div className={styles.right}>
-                    <Tooltip title="使用文档">
+                   {/* <Tooltip title="使用文档">
                         <a
                             target="_blank"
                             href="https://www.rainbond.com/docs/stable/user-app-docs/how-to-use-app.html"
@@ -244,7 +244,7 @@ export default class GlobalHeader extends PureComponent {
                             <Icon type="question-circle-o"/>
                         </a >
                     </Tooltip>
-                    {/*
+                    
           <HeaderSearch
             className={`${styles.action} ${styles.search}`}
             placeholder="站内搜索"
