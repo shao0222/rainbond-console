@@ -282,7 +282,7 @@ class AppList extends PureComponent {
                         className={this.state.sync
                 ? 'roundloading'
                 : ''}
-                        type="sync"/>从好雨云市同步应用信息</Button>
+                        type="sync"/>从云市同步应用信息</Button>
                     <List
                         size="large"
                         rowKey="id"
@@ -399,7 +399,7 @@ class AppList extends PureComponent {
                             ? 'block'
                             : 'none'
                     }}>
-                        <p>到好雨官方获取您企业的认证信息，如未登录需要先进行登录</p>
+                        <p>先获取您企业的认证信息，如未登录需要先进行登录</p>
                         <Button onClick={this.handleTakeInfo} type="primary">去获取</Button>
                     </div>
 
@@ -444,7 +444,7 @@ class AppList extends PureComponent {
         const pageHeaderContent = (
             <div className={styles.pageHeaderContent}>
                 <div className={styles.content}>
-                    <div>将当前云帮平台和好雨云市进行互联，同步应用，插件，数据中心等资源</div>
+                    <div>将当前云平台和云市进行互联，同步应用，插件，数据中心等资源</div>
                     <div>应用下载完成后，方可在 创建应用->从云市安装 中看到</div>
                 </div>
             </div>

@@ -77,7 +77,7 @@ export default class Index extends PureComponent {
 			<div>
 				<p>用户名: {user.email}
 					或 {user.phone || '手机号'}</p>
-				<p>密&nbsp;&nbsp;&nbsp;&nbsp;码: 同云帮登录密码</p>
+				<p>密&nbsp;&nbsp;&nbsp;&nbsp;码: 同平台登录密码</p>
 			</div>
 		);
 		const actions = [ <Button onClick = {
@@ -88,8 +88,8 @@ export default class Index extends PureComponent {
 		type = "primary" > 点击继续创建应用 </Button>];
 		return <Result
 			type="success"
-			title="好雨Git账号注册成功"
-			description="已下是您的好雨Git账号信息"
+			title="Git账号注册成功"
+			description="已下是您的Git账号信息"
 			extra={extra}
 			actions={actions}
 			style={{ marginTop: 48, marginBottom: 16 }}
@@ -105,7 +105,7 @@ export default class Index extends PureComponent {
 
 					{(!userUtil.hasGitlatAccount(user))
 					? <div>
-						<Alert message="请先注册您的好雨Git账号" type="warning" closable/>
+						<Alert message="请先注册您的Git账号" type="warning" closable/>
 							<div
 								style={{
 								marginBottom: 32

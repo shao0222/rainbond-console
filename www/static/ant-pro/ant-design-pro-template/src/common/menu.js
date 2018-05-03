@@ -35,7 +35,7 @@ const menuData = [
     icon: 'team',
     path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/team`
   }, {
-    name: '好雨互联',
+    name: '云资源管理',
     icon: 'usb',
     path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/source`
   }, {
