@@ -141,7 +141,7 @@ class PayTip extends React.PureComponent {
 class NoTeamTip extends React.PureComponent {
     componentDidMount(){
         Modal.warning({
-            title: '您还没有团队，无法使用云帮',
+            title: '您还没有团队，无法使用云平台',
             content: '请联系管理人员'
         })
     }
@@ -339,7 +339,7 @@ class BasicLayout extends React.PureComponent {
     getPageTitle() {
         const {routerData, location} = this.props;
         const {pathname} = location;
-        let title = '好雨云帮 | 应用一键部署';
+        let title = '云平台';
         if (routerData[pathname] && routerData[pathname].name) {
             title = `${routerData[pathname].name} - ` + title;
         }
