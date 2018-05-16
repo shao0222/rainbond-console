@@ -361,10 +361,10 @@ export default class Index extends PureComponent {
         {
           this.isPublicRegion() ? 
           <Fragment>
-            <div className={styles.statItem}>
+            {/* <div className={styles.statItem}>
               <p>账户余额</p>
               <p>{money}</p>
-            </div>
+            </div> */}
             <div className={styles.statItem}>
               <p>已使用内存</p>
               <Tooltip title={`总计：${this.state.memory.limit || 0} 过期时间：${this.state.memory.expire_date || '-'}`}>

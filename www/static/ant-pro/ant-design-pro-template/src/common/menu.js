@@ -38,11 +38,13 @@ const menuData = [
     name: '云资源管理',
     icon: 'usb',
     path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/source`
-  }, {
-    name: '财务中心',
-    icon: 'red-envelope',
-    path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/finance`
   }
+  // , {
+  //   name: '财务中心',
+  //   icon: 'red-envelope',
+    
+  //   path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/finance`
+  // }
 ];
 
 function formatter(data, parentPath = '', parentAuthority) {
