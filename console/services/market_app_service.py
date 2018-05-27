@@ -601,8 +601,8 @@ class AppMarketSynchronizeService(object):
             rbc = rainbond_app_repo.get_rainbond_app_by_key_and_version(app_group["group_key"],
                                                                         app_group["group_version"])
             if rbc:
-                rbc.describe = app_group["info"]
-                rbc.pic = app_group["pic"]
+                rbc.describe = app_group["info"] if app_group["info"] else rbc.describe
+                rbc.pic = app_group["pic"] if app_group["pic"] else rbc.pic
                 rbc.update_time = current_time_str("%Y-%m-%d %H:%M:%S")
                 rbc.template_version = app_group.get("template_version", rbc.template_version)
                 rbc.save()
@@ -657,8 +657,11 @@ class AppMarketSynchronizeService(object):
                 user_name = v2_template.get("publish_user", None)
                 user_id = 0
                 if user_name:
-                    user = user_repo.get_user_by_username(user_name)
-                    user_id = user.user_id
+                    try:
+                        user = user_repo.get_user_by_username(user_name)
+                        user_id = user.user_id
+                    except Exception as e:
+                        logger.exception(e)
                 rainbond_app.share_user = user_id
                 rainbond_app.share_team = v2_template.get("publish_team", "")
                 rainbond_app.pic = v2_template.get("pic", rainbond_app.pic)

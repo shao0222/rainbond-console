@@ -245,6 +245,10 @@ class Users(models.Model):
 
     @property
     def is_sys_admin(self):
+        """
+        是否是系统管理员
+        :return: True/False
+        """
         # admins = ('liufan@gmail.com', 'messi@goodrain.com', 'elviszhang@163.com', 'rhino@goodrain.com',
         #           'ethan@goodrain.com', 'fanfan@goodrain.com', 'wangjiajun33wjj@126.com', 'linmu0001@126.com')
         # return bool(self.email in admins)
@@ -304,6 +308,9 @@ class BaseModel(models.Model):
 
 
 class Tenants(BaseModel):
+    """
+    租户表
+    """
     class Meta:
         db_table = 'tenant_info'
 
@@ -795,24 +802,33 @@ class ServiceDomainCertificate(BaseModel):
 
 
 class PermRelService(BaseModel):
+    """
+    用户和服务关系表/用户在一个服务中的角色
+    """
     class Meta:
         db_table = 'service_perms'
 
     user_id = models.IntegerField(help_text=u"用户id")
     service_id = models.IntegerField(help_text=u"服务id")
     identity = models.CharField(
-        max_length=15, choices=service_identity, help_text=u"服务身份")
+        max_length=15, choices=service_identity, help_text=u"服务身份", null=True, blank=True)
+    role_id = models.IntegerField(help_text=u'角色', null=True, blank=True)
 
 
 class PermRelTenant(BaseModel):
+    """
+    用户和团队的关系表
+    identity ：租户权限
+    """
     class Meta:
         db_table = 'tenant_perms'
 
     user_id = models.IntegerField(help_text=u"关联用户")
     tenant_id = models.IntegerField(help_text=u"关联租户")
     identity = models.CharField(
-        max_length=15, choices=tenant_identity, help_text=u"租户身份")
+        max_length=15, choices=tenant_identity, help_text=u"租户身份", null=True, blank=True)
     enterprise_id = models.IntegerField(help_text=u"关联企业")
+    role_id = models.IntegerField(help_text=u'角色', null=True, blank=True)
 
 
 class TenantRecharge(BaseModel):

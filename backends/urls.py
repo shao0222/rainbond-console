@@ -2,9 +2,10 @@
 from django.conf.urls import patterns, url, include
 
 from backends.views.account import AccountCreateView, TenantEnterpriseView, \
-    AuthAccessTokenView
+    AuthAccessTokenView, EnterpriseFuzzyQueryView
 from backends.views.announcement import AllAnnouncementView, AnnouncementView
 from backends.views.config import *
+from backends.views.event import ServiceOperateView, ServiceOperationDetailView
 from backends.views.resource.clusters import *
 from backends.views.resource.nodes import *
 from backends.views.resource.region import *
@@ -37,7 +38,10 @@ urlpatterns = patterns(
     url(r'^v1/config/license$', AuthorizationAView.as_view()),
     url(r'^v1/config/github', ConfigGithubView.as_view()),
     url(r'^v1/config/gitlab', ConfigGitlabView.as_view()),
+    url(r'^v1/config/hub-config', HubConfigView.as_view()),
+    url(r'^v1/config/ftp-config', FtpConfigView.as_view()),
     url(r'^v1/config/code/link$', ConfigCodeView.as_view()),
+    url(r'^v1/config/manage$', ConfigManageView.as_view()),
 
     # 数据中心路径
     url(r'^v1/regions$', RegionView.as_view()),
@@ -48,7 +52,7 @@ urlpatterns = patterns(
     # url(r'^v1/regions/tenants/resources$', TenantRegionResourceView.as_view()),
     # url(r'^v1/regions/tenants/resources/real$', TenantRegionRealResourceView.as_view()),
     # # 数据中心下集群
-    # url(r'^v1/regions/(?P<region_id>[\w\-]+)/clusters$', ClusterView.as_view()),
+    url(r'^v1/regions/(?P<region_id>[\w\-]+)/clusters$', ClusterView.as_view()),
     # url(r'^v1/regions/(?P<region_id>[\w\-]+)/clusters/resources$', ClusterResourceView.as_view()),
     # # 数据中心下所有节点
     # url(r'^v1/regions/(?P<region_id>[\w\-]+)/nodes$', RegionNodesView.as_view()),
@@ -74,6 +78,7 @@ urlpatterns = patterns(
     url(r'^v1/teams/(?P<tenant_name>[\w\-]+)$', TeamView.as_view()),
     url(r'^v1/teams/(?P<tenant_name>[\w\-]+)/users/(?P<user_name>[\w\-]+)$', TeamUserView.as_view()),
     url(r'^v1/teams/(?P<tenant_name>[\w\-]+)/add-user$', AddTeamUserView.as_view()),
+    url(r'^v1/teams/(?P<tenant_name>[\w\-]+)/regions$', TeamUsableRegionView.as_view()),
     # 标签路径
     url(r'^v1/labels$', AllLabelsView.as_view()),
     url(r'^v1/query/label', QueryLabelView.as_view()),
@@ -85,8 +90,12 @@ urlpatterns = patterns(
 
     url(r'^v1/account/create$', AccountCreateView.as_view()),
     url(r'^v1/account/auth-user-token$', AuthAccessTokenView.as_view()),
+
+    url(r'^v1/enterprise/fuzzy_query$', EnterpriseFuzzyQueryView.as_view()),
     url(r'^v1/enterprise/(?P<enterprise_id>[\w\-]+)$', TenantEnterpriseView.as_view()),
 
-
+    # 操作汇总
+    url(r'^v1/events$', ServiceOperateView.as_view()),
+    url(r'^v1/events/detail$', ServiceOperationDetailView.as_view()),
 )
 

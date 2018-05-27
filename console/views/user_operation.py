@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 import json
 import logging
+import re
 import time
 
-import re
 from rest_framework.response import Response
 from rest_framework_jwt.settings import api_settings
 
 from console.forms.users_operation import RegisterForm
 from console.repositories.perm_repo import perms_repo
 from console.services.enterprise_services import enterprise_services
+from console.services.plugin import plugin_service
 from console.services.region_services import region_services
 from console.services.team_services import team_services
 from console.services.user_services import user_services
@@ -18,12 +19,11 @@ from www import perms
 from www.forms.account import PasswordResetForm
 from www.models import Users, SuperAdminUser
 from www.perms import PermActions, UserActions
-from www.utils.crypt import AuthCode, make_uuid
+from www.utils.crypt import AuthCode
 from www.utils.mail import send_reset_pass_mail
 from www.utils.return_message import general_message, error_message
-from console.services.plugin import plugin_service, plugin_version_service
-from console.repositories.plugin import config_group_repo, config_item_repo
 
+from console.repositories.perm_repo import role_perm_repo, role_repo
 
 jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
 jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
@@ -33,58 +33,6 @@ logger = logging.getLogger("default")
 
 class TenantServiceView(BaseApiView):
     allowed_methods = ('POST',)
-
-    def add_default_plugin(self, user, tenant, regions):
-        try:
-            for region in regions:
-                desc = "实时分析应用的吞吐率、响应时间、在线人数等指标"
-                plugin_alias = "服务实时性能分析"
-                category = "analyst-plugin:perf"
-                image_url = "goodrain.me/tcm"
-                code, msg, plugin_base_info = plugin_service.create_tenant_plugin(tenant, user.user_id, region, desc,
-                                                                                  plugin_alias,
-                                                                                  category, "image",
-                                                                                  image_url, "")
-                plugin_base_info.origin = "local_market"
-                plugin_base_info.save()
-
-                plugin_build_version = plugin_version_service.create_build_version(region, plugin_base_info.plugin_id,
-                                                                                   tenant.tenant_id,
-                                                                                   user.user_id, "", "unbuild", 64)
-                config_params = {
-                    "plugin_id": plugin_build_version.plugin_id,
-                    "build_version": plugin_build_version.build_version,
-                    "config_name": "端口是否开启分析",
-                    "service_meta_type": "upstream_port",
-                    "injection": "auto"
-                }
-                config_group_repo.create_plugin_config_group(**config_params)
-                item_params = {
-                    "plugin_id": plugin_build_version.plugin_id,
-                    "build_version": plugin_build_version.build_version,
-                    "service_meta_type": "upstream_port",
-                    "attr_name": "OPEN",
-                    "attr_type": "radio",
-                    "attr_alt_value": "YES,NO",
-                    "attr_default_value": "YES",
-                    "is_change": True,
-                    "attr_info": "是否开启当前端口分析，用户自助选择服务端口",
-                }
-                config_item_repo.create_plugin_config_items(**item_params)
-
-                event_id = make_uuid()
-                plugin_build_version.event_id = event_id
-                plugin_build_version.plugin_version_status = "fixed"
-
-                plugin_service.create_region_plugin(region, tenant, plugin_base_info)
-
-                plugin_service.build_plugin(region, plugin_base_info, plugin_build_version, user, tenant,
-                                            event_id)
-                plugin_build_version.build_status = "build_success"
-                plugin_build_version.save()
-        except Exception as e:
-            logger.error("添加默认插件错误")
-            logger.exception(e)
 
     def post(self, request, *args, **kwargs):
         """
@@ -150,6 +98,7 @@ class TenantServiceView(BaseApiView):
                 user_info["is_active"] = 1
                 user = Users(**user_info)
                 user.set_password(password)
+                user.save()
                 enterprise = enterprise_services.get_enterprise_first()
                 if not enterprise:
                     enterprise = enterprise_services.create_enterprise()
@@ -200,12 +149,7 @@ class TenantServiceView(BaseApiView):
                             code, msg, tenant_region = region_services.create_tenant_on_region(tenant.tenant_name,
                                                                                                tenant.region)
                             if code != 200:
-                                return  Response(general_message(code,"register fail",msg),status=code)
-                            # if not perm:
-                            #     result = general_message(400, "invited failed", "团队关联失败，注册失败")
-                            #     return Response(result, status=400)
-
-                            self.add_default_plugin(user, tenant, region_name)
+                                return Response(general_message(code, "register fail", msg), status=code)
 
                             data = dict()
                             data["user_id"] = user.user_id
@@ -434,10 +378,28 @@ class UserDetailsView(JWTAuthApiView):
                 tenant_info["create_time"] = tenant.create_time
                 perms_list = team_services.get_user_perm_identitys_in_permtenant(user_id=user.user_id,
                                                                                  tenant_name=tenant.tenant_name)
-                final_identity = perms.get_highest_identity(perms_list)
-                tenant_info["identity"] = final_identity
-                tenant_actions = p.keys('tenant_{0}_actions'.format(final_identity))
-                user.actions.set_actions('tenant', tenant_actions)
+                perms_role_id_list = team_services.get_user_perm_role_id_in_permtenant(user_id=user.user_id,
+                                                                                       tenant_name=tenant.tenant_name)
+
+                perms_tuple = ()
+
+                if perms_list:
+                    final_identity = perms.get_highest_identity(perms_list)
+                    tenant_actions = p.keys('tenant_{0}_actions'.format(final_identity))
+                    perms_tuple += tenant_actions
+                else:
+                    final_identity = []
+
+                role_name_list = [role_repo.get_role_name_by_role_id(role_id=role_id) for role_id in perms_role_id_list]
+
+                for role_id in perms_role_id_list:
+                    tenant_actions = role_perm_repo.get_perm_by_role_id(role_id=role_id)
+                    perms_tuple += tenant_actions
+                if final_identity:
+                    tenant_info["role_name_list"] = [final_identity] + role_name_list
+                else:
+                    tenant_info["role_name_list"] = role_name_list
+                user.actions.set_actions('tenant', tuple(set(perms_tuple)))
                 tenant_info["tenant_actions"] = user.actions.tenant_actions
                 tenant_list.append(tenant_info)
             user_detail["teams"] = tenant_list
@@ -447,4 +409,3 @@ class UserDetailsView(JWTAuthApiView):
             logger.exception(e)
             result = error_message(e.message)
         return Response(result, status=code)
-

@@ -52,6 +52,35 @@ class PluginBaseInfoView(PluginBaseView):
             result = error_message(e.message)
         return Response(result, status=result["code"])
 
+    def delete(self, request, *args, **kwargs):
+        """
+        删除插件
+        ---
+        parameters:
+            - name: tenantName
+              description: 租户名
+              required: true
+              type: string
+              paramType: path
+            - name: plugin_id
+              description: 插件ID
+              required: true
+              type: string
+              paramType: path
+
+        """
+        try:
+            code, msg = plugin_service.delete_plugin(self.response_region, self.team, self.plugin.plugin_id)
+            if code != 200:
+                return Response(general_message(code, "delete plugin fail", msg), status=code)
+            else:
+                result = general_message(code, "success", msg)
+        except Exception as e:
+            logger.exception(e)
+            result = error_message(e.message)
+        return Response(result, status=result["code"])
+
+
 
 class PluginEventLogView(PluginBaseView):
     @never_cache
@@ -242,16 +271,20 @@ class PluginVersionInfoView(PluginBaseView):
             code_version = request.data.get("code_version", self.plugin_version.code_version)
             min_memory = request.data.get("min_memory", self.plugin_version.min_memory)
             min_cpu = plugin_version_service.calculate_cpu(self.response_region, min_memory)
-            # 保存基本信息
+
             self.plugin.plugin_alias = plugin_alias
-            self.plugin.save()
-            # 保存版本信息
+
             self.plugin_version.update_info = update_info
             self.plugin_version.build_cmd = build_cmd
             self.plugin_version.image_tag = image_tag
             self.plugin_version.code_version = code_version
             self.plugin_version.min_memory = min_memory
             self.plugin_version.min_cpu = min_cpu
+
+            plugin_service.update_region_plugin_info(self.response_region, self.team, self.plugin,self.plugin_version)
+            # 保存基本信息
+            self.plugin.save()
+            # 保存版本信息
             self.plugin_version.save()
             result = general_message(200, "success", "操作成功")
         except Exception as e:

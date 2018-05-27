@@ -72,8 +72,8 @@ class PluginBuildVersionService(object):
             return pbvs[0]
         return None
 
-    def get_newest_usable_plugin_version(self,plugin_id):
-        pbvs = plugin_version_repo.get_plugin_versions(plugin_id).filter(build_status="success")
+    def get_newest_usable_plugin_version(self, plugin_id):
+        pbvs = plugin_version_repo.get_plugin_versions(plugin_id).filter(build_status="build_success")
         if pbvs:
             return pbvs[0]
         return None
@@ -105,6 +105,7 @@ class PluginBuildVersionService(object):
         old_dict = model_to_dict(old_build_version)
         old_dict["build_status"] = "unbuild"
         old_dict["event_id"] = ""
+        old_dict["plugin_version_status"] = "unfixed"
         # 剔除主键
         old_dict.pop("ID")
         old_dict["build_version"] = new_version
@@ -118,3 +119,6 @@ class PluginBuildVersionService(object):
             pbv.build_status = status
             pbv.save()
         return pbv
+
+    def get_by_id_and_version(self, plugin_id, plugin_version):
+        return plugin_version_repo.get_by_id_and_version(plugin_id, plugin_version)

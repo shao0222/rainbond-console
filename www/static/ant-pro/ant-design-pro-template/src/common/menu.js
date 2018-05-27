@@ -5,7 +5,7 @@ const menuData = [
   {
     name: '总览',
     icon: 'dashboard',
-    path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/index`
+    path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/index`,
   }, {
     name: '创建应用',
     icon: 'plus',
@@ -18,7 +18,7 @@ const menuData = [
         name: '从Docker镜像创建',
         path: 'image'
       }, {
-        name: '从云市安装',
+        name: '从应用市场安装',
         path: 'market'
       }
     ]
@@ -35,7 +35,7 @@ const menuData = [
     icon: 'team',
     path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/team`
   }, {
-    name: '好雨互联',
+    name: '连接云市',
     icon: 'usb',
     path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/source`
   }, {

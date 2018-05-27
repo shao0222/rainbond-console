@@ -5,6 +5,7 @@ import {Link} from 'dva/router';
 import styles from './index.less';
 import globalUtil from '../../utils/global';
 import userUtil from '../../utils/user';
+import teamUtil from '../../utils/team';
 
 const {Sider} = Layout;
 const {SubMenu} = Menu;
@@ -230,6 +231,7 @@ export default class SiderMenu extends PureComponent {
     return menusData
       .filter(item => item.name && !item.hideInMenu)
       .map((item) => {
+        
         const ItemDom = this.getSubMenuOrItem(item);
         return this.checkPermissionItem(item.authority, ItemDom);
       })
@@ -257,10 +259,10 @@ export default class SiderMenu extends PureComponent {
        var region_name = globalUtil.getCurrRegionName();
        var region  = userUtil.hasTeamAndRegion(user, team_name, region_name);
        if(region){
-         //当前是公有数据中心
-         if(region.region_scope === 'public' && (team.identity === 'owner' || team.identity === 'admin')){
-            return ItemDom;
-         }
+          //当前是公有数据中心
+          if(region.region_scope === 'public' && (teamUtil.canViewFinance(team))){
+             return ItemDom;
+          }
        }
        return null;
     } else {

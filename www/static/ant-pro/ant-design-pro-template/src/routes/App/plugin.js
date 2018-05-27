@@ -17,7 +17,9 @@ import {
   Avatar,
   notification,
   Divider,
-  Select
+  Modal,
+  Select,
+  Tabs
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import {getRoutes} from '../../utils/utils';
@@ -27,8 +29,12 @@ import DescriptionList from '../../components/DescriptionList';
 
 import styles from './basicList.less';
 import globalUtil from '../../utils/global';
+import teamUtil from '../../utils/team';
+import userUtil from '../../utils/user';
 import pluginUtil from '../../utils/plugin';
 import appPluginUtil from '../../utils/appPlugin';
+import NoPermTip from '../../components/NoPermTip';
+import appUtil from '../../utils/app';
 
 const {Description} = DescriptionList;
 const Option = Select.Option;
@@ -36,9 +42,48 @@ const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const FormItem = Form.Item;
+const TabPane = Tabs.TabPane;
+
+
+class UpdateMemory extends PureComponent {
+   constructor (props){
+       super(props);
+       this.state = {
+           memory: this.props.memory
+       }
+   }
+   handleOk = () => {
+        this.props.onOk && this.props.onOk(this.state.memory);
+   }
+   handleChange = (value) => {
+       this.setState({memory: value})
+   }
+   render(){
+      return <Modal 
+          title={"内存修改"}
+          visible={true}
+          onOk={this.handleOk}
+          onCancel={this.props.onCancel}
+      >
+        <Select style={{width: '100%'}} value={this.state.memory} onChange={this.handleChange}>
+             <Option value={64}>64M</Option>
+             <Option value={128}>128M</Option>
+             <Option value={256}>256M</Option>
+             <Option value={512}>512M</Option>
+             <Option value={1024}>1G</Option>
+             <Option value={2048}>2G</Option>
+             <Option value={2048*2}>4G</Option>
+        </Select>
+      </Modal>
+   }
+}
+
 
 @Form.create()
 class ConfigItems extends PureComponent {
+  componentWillReceiveProps(nextProps){
+     
+  }
   onChange = (val, index) => {
     const data = this.props.data;
     data.map((item, i) => {
@@ -50,6 +95,7 @@ class ConfigItems extends PureComponent {
     this.props.onChange && this
       .props
       .onChange(data);
+    this.forceUpdate();
   }
   renderItem = (item, index) => {
     if (item.attr_type === 'string') {
@@ -70,7 +116,7 @@ class ConfigItems extends PureComponent {
           onChange={(e) => {
           this.onChange(e.target.value, index)
         }}
-          defaultValue={item.attr_value || item.attr_default_value || ''}/>
+          value={item.attr_value || item.attr_default_value || ''}/>
       </FormItem>
     }
     if (item.attr_type === 'radio') {
@@ -94,7 +140,7 @@ class ConfigItems extends PureComponent {
           this.onChange(val, index)
         }}
           disabled={!item.is_change}
-          defaultValue={item.attr_value || item.attr_default_value || ''}>
+          value={item.attr_value || item.attr_default_value || ''}>
           {options.map((v) => {
             return <Option value={v}>{v}</Option>
           })
@@ -123,7 +169,7 @@ class ConfigItems extends PureComponent {
           onChange={(val) => {
           this.onChange(val.join(','), index)
         }}
-          defaultValue={(item.attr_value || item.attr_default_value || '').split(',')}
+        value={(item.attr_value || item.attr_default_value || '').split(',')}
           mode="multiple">
           {options.map((v) => {
             return <Option value={v}>{v}</Option>
@@ -152,8 +198,46 @@ class ConfigItems extends PureComponent {
 
 //下游应用端口类配置组
 class ConfigDownstreamPort extends PureComponent {
+  constructor(props){
+    super(props);
+    var data = this.props.data;
+    this.state = {
+       currApp: data[0].dest_service_cname,
+       currPort: data[0].port
+    }
+  }
+  getAppByName = (appName) => {
+      return this.props.data.filter((item)=>{
+          return item.dest_service_cname === appName
+      })
+  }
+  handleAppChange = (appName) => {
+     const apps = this.getAppByName(appName);
+     this.setState({currApp: appName, currPort: apps[0].port})
+  }
+  handlePortChange = (port) => {
+    this.setState({currPort: port})
+  }
+  getCurrPorts = () => {
+      var apps = this.getAppByName(this.state.currApp);
+      return apps.map((item) => {
+         return item.port;
+      })
+  }
+  getCurrData = () => {
+      const currPort = this.state.currPort;
+      const currApp = this.state.currApp;
+      const apps = this.getAppByName(currApp);
+      return apps.filter((item) => {
+           return item.port === currPort
+      })[0]
+  }
   render() {
     const data = this.props.data;
+    const currData = this.getCurrData();
+    const currPort = this.state.currPort;
+    const currApp = this.state.currApp;
+    const ports = this.getCurrPorts();
     return (
       <Card
         style={{
@@ -162,10 +246,20 @@ class ConfigDownstreamPort extends PureComponent {
         type="inner"
         title={< div > <span style={{
         marginRight: 24
-      }}>下游应用: {data.dest_service_cname}</span> < span style = {{marginRight: 24}} > 端口号 : {
-        data.port
-      } < /span> <span style={{marginRight: 24}}>端口协议: {data.protocol}</span > </div>}>
-        <ConfigItems onChange={this.handleOnChange} data={data.config}/>
+      }}>下游应用: <Select onChange={this.handleAppChange} value={currApp}>
+      {
+        data.map((item) => {
+          return <Option value={item.dest_service_cname}>{item.dest_service_cname}</Option>
+        })
+      }
+    </Select></span> < span style = {{marginRight: 24}} > 端口号 : <Select onChange={this.handlePortChange} value={currPort}>
+      {
+        ports.map((item) => {
+          return <Option value={item}>{item}</Option>
+        })
+      }
+    </Select> < /span> <span style={{marginRight: 24}}>端口协议: {currData.protocol}</span > </div>}>
+        <ConfigItems onChange={this.handleOnChange} data={currData.config}/>
       </Card>
     )
   }
@@ -173,9 +267,25 @@ class ConfigDownstreamPort extends PureComponent {
 
 //应用端口类配置组
 class ConfigUpstreamPort extends PureComponent {
-
+  constructor(props){
+    super(props);
+    var data = this.props.data;
+    this.state = {
+       currPort: data[0].port
+    }
+  }
+  handlePortChange = (port) => {
+    this.setState({currPort: port})
+  }
+  getCurrData = (port) => {
+      return this.props.data.filter((item) => {
+           return item.port === port
+      })[0]
+  }
   render() {
     const data = this.props.data;
+    const currPort = this.state.currPort;
+    const currData = this.getCurrData(currPort);
     return (
       <Card
         style={{
@@ -184,10 +294,16 @@ class ConfigUpstreamPort extends PureComponent {
         type="inner"
         title={< div > <span style={{
         marginRight: 24
-      }}>端口号: {data.port}</span> < span style = {{marginRight: 24}} > 端口协议 : {
-        data.protocol
+      }}>端口号: <Select onChange={this.handlePortChange} value={currPort}>
+        {
+          data.map((item) => {
+            return <Option value={item.port}>{item.port}</Option>
+          })
+        }
+      </Select></span> < span style = {{marginRight: 24}} > 端口协议 : {
+        currData.protocol
       } < /span> </div >}>
-        <ConfigItems onChange={this.handleOnChange} data={data.config}/>
+        <ConfigItems onChange={this.handleOnChange} data={currData.config}/>
       </Card>
     )
   }
@@ -197,7 +313,7 @@ class ConfigUpstreamPort extends PureComponent {
 class ConfigUnDefine extends PureComponent {
 
   render() {
-    const data = this.props.data;
+    const data = this.props.data || [];
     return (
       <Card style={{
         marginBottom: 24
@@ -210,32 +326,33 @@ class ConfigUnDefine extends PureComponent {
 
 class PluginConfigs extends PureComponent {
 
-  renderConfig = (config) => {
-    if (config.service_meta_type === 'upstream_port') {
+  renderConfig = (configs, type) => {
+    if (type === 'upstream_port') {
+      return <ConfigUpstreamPort data={configs}/>
+     
+    }
+    if (type === 'downstream_port') {
       return <Fragment>
-        <ConfigUpstreamPort data={config}/>
+        <ConfigDownstreamPort data={configs}/>
       </Fragment>
     }
-    if (config.service_meta_type === 'downstream_port') {
+    if (type === 'un_define') {
       return <Fragment>
-        <ConfigDownstreamPort data={config}/>
-      </Fragment>
-    }
-    if (config.service_meta_type === 'un_define') {
-      return <Fragment>
-        <ConfigUnDefine data={config}/>
+        <ConfigUnDefine data={configs}/>
       </Fragment>
     }
     return null;
   }
   render() {
-    const configs = this.props.configs || [];
+    const configs = this.props.configs || {};
+    const undefine_env =  configs.undefine_env || {};
+    const downstream_env = configs.downstream_env || [];
+    const upstream_env = configs.upstream_env || [];
     return (
-      <div>
-        {configs.map((config) => {
-          return this.renderConfig(config);
-        })
-}
+      <div style={{padding: '20px 0'}}>
+        {JSON.stringify(undefine_env) !== '{}' ? this.renderConfig(undefine_env, 'un_define') : null}
+        {upstream_env.length ? this.renderConfig(upstream_env, 'upstream_port') :  null}
+        {downstream_env.length ? this.renderConfig(downstream_env, 'downstream_port') : null}
       </div>
     )
   }
@@ -257,8 +374,12 @@ export default class Index extends PureComponent {
   }
 
   componentDidMount() {
+    if(!this.canView()) return;
     this.getPlugins();
-
+  }
+  //是否可以浏览当前界面
+  canView(){
+    return appUtil.canManageAppPlugin(this.props.appDetail);
   }
   getPlugins = () => {
     var team_name = globalUtil.getCurrTeamName();
@@ -350,7 +471,7 @@ export default class Index extends PureComponent {
           build_version: plugin.build_version
         },
         callback: (data) => {
-          this.state.openedPlugin[plugin.plugin_id] = data.list || [];
+          this.state.openedPlugin[plugin.plugin_id] = data.bean || {};
           this.forceUpdate();
         }
       })
@@ -377,6 +498,12 @@ export default class Index extends PureComponent {
           notification.success({message: '修改成功'})
         }
       })
+  }
+  onUpdateMemory = (plugin) => {
+    this.setState({updateMemory: plugin})
+  }
+  cancelUpdateMemory = () => {
+      this.setState({updateMemory: null});
   }
   renderInstalled = () => {
     const installedList = this.state.installedList;
@@ -414,6 +541,11 @@ export default class Index extends PureComponent {
             }}
               href="javascript:;">启用</a>, < a onClick = {
             () => {
+              this.onUpdateMemory(item)
+            }
+          }
+          href = "javascript:;" > 更新内存 < /a>, , < a onClick = {
+            () => {
               this.onDeletePlugin(item)
             }
           }
@@ -422,7 +554,9 @@ export default class Index extends PureComponent {
             avatar={< Icon type = "api" style = {{fontSize: 40, color: 'rgba(0, 0, 0, 0.2)'}}/>}
             title={< div > <Link to={`/team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/myplugns/${item.plugin_id}`}>{item.plugin_alias}</Link> < p style = {{fontSize: 12, color:'#dcdcdc'}} > <span style={{
             marginRight: 24
-          }}>类别： {pluginUtil.getCategoryCN(item.category)}</span> < span > 版本： {item.build_version} < /span></p > </div>}
+          }}>类别： {pluginUtil.getCategoryCN(item.category)}</span> < span  style={{
+            marginRight: 24
+          }}> 版本： {item.build_version} < /span> < span > 内存： {item.min_memory} MB < /span></p > </div>}
             description={item.desc}/>
         </List.Item>
         {this.isOpenedPlugin(item)
@@ -497,8 +631,10 @@ export default class Index extends PureComponent {
           build_version: plugin.build_version
         },
         callback: (data) => {
-          notification.success({message: '开通成功'});
+          notification.success({message: '开通成功，需要重启才能生效'});
           this.getPlugins();
+          this.props.onshowRestartTips(true)
+          
         }
       })
   }
@@ -523,13 +659,36 @@ export default class Index extends PureComponent {
         },
         callback: (data) => {
           delete this.state.openedPlugin[plugin.plugin_id];
-          notification.success({message: '卸载成功'});
+          notification.success({message: '卸载成功，需要重启才能生效'});
           this.cancelDeletePlugin();
           this.getPlugins();
+          this.props.onshowRestartTips(true)
         }
       })
   }
+  handleUpdateMemory = (memory) => {
+      var team_name = globalUtil.getCurrTeamName();
+      var app_alias = this.props.appAlias;
+      var plugin = this.state.updateMemory;
+      this
+        .props
+        .dispatch({
+          type: 'appControl/updatePluginMemory',
+          payload: {
+            team_name,
+            app_alias,
+            plugin_id: plugin.plugin_id,
+            min_memory: memory
+          },
+          callback: (data) => {
+            this.getPlugins();
+            this.cancelUpdateMemory();
+            notification.success({message: '操作成功'})
+          }
+        })
+  }
   render() {
+    if(!this.canView()) return <NoPermTip />;
     var type = this.state.type;
     return (
       <Card>
@@ -567,6 +726,10 @@ export default class Index extends PureComponent {
           onCancel={this.cancelDeletePlugin}
           title="卸载插件"
           desc="确定要卸载此插件吗？"/>}
+
+          {
+            this.state.updateMemory && <UpdateMemory onOk={this.handleUpdateMemory} onCancel={this.cancelUpdateMemory} memory={this.state.updateMemory.min_memory} />
+          }
       </Card>
     );
   }

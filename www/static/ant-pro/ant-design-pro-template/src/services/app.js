@@ -273,9 +273,19 @@ export function getRelationedApp(body = {
 */
 export function getUnRelationedApp(body = {
 				team_name,
-				app_alias
+				app_alias,
+				page,
+				page_size
 }) {
-				return request(config.baseUrl + `/console/teams/${body.team_name}/apps/${body.app_alias}/un_dependency`, {method: 'get'});
+	console.log(body)
+				return request(config.baseUrl + `/console/teams/${body.team_name}/apps/${body.app_alias}/un_dependency`, {
+					method: 'get',
+					params:{
+						page: body.page ||1,
+						page_size: body.page_size || 8
+					}
+					
+			});
 }
 
 /*
@@ -922,7 +932,7 @@ export async function getAppRequest(body = {
 								method: 'get',
 								showMessage: false,
 								params: {
-												query: 'sum(ceil(delta(app_request{method="total",service_id="' + body.serviceId + '"}[1m])/12))'
+												query: 'sum(ceil(increase(app_request{service_id="'+body.serviceId+'",method="total"}[1m])/12))'
 
 								},
 								showLoading: false
@@ -980,7 +990,7 @@ export async function getAppRequestRange(body = {
 								method: 'get',
 								showMessage: false,
 								params: {
-												query: 'sum(ceil(delta(app_request{method="total",service_id="' + body.serviceId + '"}[1m])/12))',
+												query: 'sum(ceil(increase(app_request{service_id="'+body.serviceId+'",method="total"}[1m])/12))',
 												start: body.start,
 												end: body.end || (new Date().getTime() / 1000),
 												step: body.step
@@ -1197,15 +1207,15 @@ export async function setMemberAction(body = {
 				team_name,
 				app_alias,
 				user_ids: [],
-				identity
+				perm_ids
 }) {
 				return request(config.baseUrl + `/console/teams/${body.team_name}/apps/${body.app_alias}/perms`, {
-								method: 'patch',
+								method: 'post',
 								data: {
-												user_ids: body
-																.user_ids
-																.join(','),
-												identity: body.identity
+									user_ids: body
+											.user_ids
+											.join(','),
+									perm_ids: body.perm_ids
 								}
 				});
 }
@@ -1232,14 +1242,15 @@ export async function deleteMember(body = {
 export async function editMemberAction(body = {
 				team_name,
 				app_alias,
-				user_ids,
-				identity
+				user_id,
+				perm_ids
 }) {
+
 				return request(config.baseUrl + `/console/teams/${body.team_name}/apps/${body.app_alias}/perms`, {
 								method: 'put',
 								data: {
 												user_id: body.user_id,
-												identity: body.identity
+												perm_ids: body.perm_ids
 								}
 				});
 }
@@ -1400,9 +1411,26 @@ export async function startPlugin(body = {
 				return request(config.baseUrl + `/console/teams/${body.team_name}/apps/${body.app_alias}/plugins/${body.plugin_id}/open`, {
 								method: 'put',
 								data: {
-												is_switch: true
+												is_switch: true,
+												min_memory: body.min_memory
 								}
 				});
+}
+
+/*
+  更新插件内存
+*/
+export async function updatePluginMemory(body = {
+	team_name,
+	app_alias,
+	plugin_id
+}) {
+	return request(config.baseUrl + `/console/teams/${body.team_name}/apps/${body.app_alias}/plugins/${body.plugin_id}/open`, {
+					method: 'put',
+					data: {
+							min_memory: body.min_memory
+					}
+	});
 }
 
 /*

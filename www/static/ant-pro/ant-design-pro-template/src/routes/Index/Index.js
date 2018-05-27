@@ -49,7 +49,7 @@ const links = [
     title: 'Dockercompose',
     href: `/team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/create/image/Dockercompose`
   }, {
-    title: '从云市安装',
+    title: '从应用市场安装',
     href: `/team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/create/market`
   }
 ];
@@ -306,11 +306,11 @@ export default class Index extends PureComponent {
       return (
         <List.Item key={item.id}>
           <List.Item.Meta
-            title={<span> <a className={styles.username}>{item.nick_name}&nbsp;</a> < span className = {
+            title={<span><a className={styles.username}>{item.nick_name}</a>< span className = {
             styles.event
-          } > {
+          } >{
             item.type_cn
-          } < /span> &nbsp; <Link to={linkTo} className={styles.event}>{item.service_cname}&nbsp;</Link > 应用  <span  className = {
+          }< /span><Link to={linkTo} className={styles.event}>{item.service_cname}</Link >应用<span  className = {
             styles.datetime
           }>{statusCNMap[item.final_status] ? `(${statusCNMap[item.final_status]})` : ''}</span></span> }
             description={< span className = {

@@ -2,25 +2,25 @@
 """
   Created on 18/3/5.
 """
-from console.views.base import RegionTenantHeaderView
-from django.views.decorators.cache import never_cache
-from www.decorator import perm_required
-from www.utils.crypt import make_uuid
-from www.utils.return_message import general_message, error_message
 import logging
+
+from django.views.decorators.cache import never_cache
 from rest_framework.response import Response
+
 from console.constants import PluginCategoryConstants
 from console.services.plugin import plugin_service
 from console.services.plugin import plugin_version_service
 from console.services.region_services import region_services
-from console.repositories.plugin import config_group_repo, config_item_repo
+from console.views.base import RegionTenantHeaderView
+from www.decorator import perm_required
+from www.utils.return_message import general_message, error_message
 
 logger = logging.getLogger("default")
 
 
 class PluginCreateView(RegionTenantHeaderView):
     @never_cache
-    @perm_required('create_plugin')
+    @perm_required('manage_plugin')
     def post(self, request, *args, **kwargs):
         """
         插件创建
@@ -111,7 +111,7 @@ class PluginCreateView(RegionTenantHeaderView):
 
             image_tag = ""
             if image:
-                image_and_tag = image.split(":")
+                image_and_tag = image.rsplit(":", 1)
                 if len(image_and_tag) > 1:
                     image = image_and_tag[0]
                     image_tag = image_and_tag[1]
@@ -131,10 +131,10 @@ class PluginCreateView(RegionTenantHeaderView):
                                                                                self.tenant.tenant_id, self.user.user_id,
                                                                                "", "unbuild", min_memory, build_cmd,
                                                                                image_tag, code_version)
-            #数据中心创建插件
-            code, msg = plugin_service.create_region_plugin(self.response_region, self.tenant, tenant_plugin)
+            # 数据中心创建插件
+            code, msg = plugin_service.create_region_plugin(self.response_region, self.tenant, tenant_plugin, image_tag)
             if code != 200:
-                plugin_service.delete_tenant_plugin(tenant_plugin.plugin_id)
+                plugin_service.delete_console_tenant_plugin(tenant_plugin.plugin_id)
                 plugin_version_service.delete_build_version_by_id_and_version(tenant_plugin.plugin_id,
                                                                               plugin_build_version.build_version, True)
                 return Response(general_message(code, "create plugin error", msg), status=code)
@@ -151,7 +151,7 @@ class PluginCreateView(RegionTenantHeaderView):
             logger.exception(e)
             result = error_message(e.message)
             if tenant_plugin:
-                plugin_service.delete_tenant_plugin(tenant_plugin.plugin_id)
+                plugin_service.delete_console_tenant_plugin(tenant_plugin.plugin_id)
             if plugin_build_version:
                 plugin_version_service.delete_build_version_by_id_and_version(tenant_plugin.plugin_id,
                                                                               plugin_build_version.build_version, True)
@@ -159,56 +159,8 @@ class PluginCreateView(RegionTenantHeaderView):
 
 
 class DefaultPluginCreateView(RegionTenantHeaderView):
-
-    def add_default_plugin(self, user, tenant, regions):
-        for region in regions:
-            desc = "实时分析(HTTP,Mysql协议)应用的吞吐率、响应时间、在线人数等指标"
-            plugin_alias = "服务实时性能分析"
-            category = "analyst-plugin:perf"
-            image_url = "goodrain.me/tcm"
-            code, msg, plugin_base_info = plugin_service.create_tenant_plugin(tenant, user.user_id, region, desc,
-                                                                                plugin_alias,
-                                                                                category, "image",
-                                                                                image_url, "")
-            plugin_base_info.origin = "local_market"
-            plugin_base_info.save()
-
-            plugin_build_version = plugin_version_service.create_build_version(region, plugin_base_info.plugin_id,
-                                                                                tenant.tenant_id,
-                                                                                user.user_id, "", "unbuild", 64)
-            config_params = {
-                "plugin_id": plugin_build_version.plugin_id,
-                "build_version": plugin_build_version.build_version,
-                "config_name": "端口是否开启分析",
-                "service_meta_type": "upstream_port",
-                "injection": "auto"
-            }
-            config_group_repo.create_plugin_config_group(**config_params)
-            item_params = {
-                "plugin_id": plugin_build_version.plugin_id,
-                "build_version": plugin_build_version.build_version,
-                "service_meta_type": "upstream_port",
-                "attr_name": "OPEN",
-                "attr_type": "radio",
-                "attr_alt_value": "YES,NO",
-                "attr_default_value": "YES",
-                "is_change": True,
-                "attr_info": "是否开启当前端口分析，用户自助选择服务端口",
-            }
-            config_item_repo.create_plugin_config_items(**item_params)
-
-            event_id = make_uuid()
-            plugin_build_version.event_id = event_id
-            plugin_build_version.plugin_version_status = "fixed"
-
-            plugin_service.create_region_plugin(region, tenant, plugin_base_info)
-
-            plugin_service.build_plugin(region, plugin_base_info, plugin_build_version, user, tenant,
-                                        event_id)
-            plugin_build_version.build_status = "build_success"
-            plugin_build_version.save()
-
-
+    @never_cache
+    @perm_required('manage_plugin')
     def post(self, request, *args, **kwargs):
         """
         插件创建
@@ -219,17 +171,46 @@ class DefaultPluginCreateView(RegionTenantHeaderView):
               required: true
               type: string
               paramType: path
-        """ 
-        try:  
-            regions = region_services.get_region_by_tenant_name(self.team_name)
-            if regions:
-                region_names = [region.region_name for region in regions]
-                self.add_default_plugin(self.user, self.team, region_names)
-            result = general_message(200, "success", "创建成功")    
+            - name: plugin_type
+              description: 插件类型
+              required: true
+              type: string
+              paramType: form
+        """
+        try:
+            plugin_type = request.data.get("plugin_type", None)
+            if not plugin_type:
+                return Response(general_message(400, "plugin type is null", "请指明插件类型"), status=400)
+            if plugin_type not in ("perf_analyze_plugin", "downstream_net_plugin"):
+                return Response(general_message(400, "plugin type not support", "插件类型不支持"), status=400)
+            plugin_service.add_default_plugin(self.user, self.team, self.response_region, plugin_type)
+            result = general_message(200, "success", "创建成功")
             return Response(result, status=200)
         except Exception as e:
             logger.exception(e)
             result = error_message(e.message)
             return Response(result, status=500)
 
+    def get(self, request, *args, **kwargs):
+        """
+        查询安装的默认插件
+        ---
+        parameters:
+            - name: tenantName
+              description: 团队名
+              required: true
+              type: string
+              paramType: path
+        """
+        try:
+            default_plugins = plugin_service.get_default_plugin(self.response_region, self.tenant)
+            bean = {"downstream_net_plugin": False, "perf_analyze_plugin": False}
+            for p in default_plugins:
+                bean[p.origin_share_id] = True
 
+            result = general_message(200, "success", "查询成功", bean=bean)
+            return Response(result, status=200)
+        except Exception as e:
+            logger.exception(e)
+            result = error_message(e.message)
+            return Response(result, status=500)
