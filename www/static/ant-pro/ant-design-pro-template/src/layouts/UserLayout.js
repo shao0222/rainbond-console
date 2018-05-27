@@ -31,9 +31,9 @@ class UserLayout extends React.PureComponent {
   getPageTitle() {
     const {routerData, location} = this.props;
     const {pathname} = location;
-    let title = '好雨云帮 | 应用一键部署';
+    let title = '应用交付平台 | 应用一键部署';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 好雨云帮 | 应用一键部署`;
+      title = `${routerData[pathname].name} - 应用交付平台 | 应用一键部署`;
     }
     return title;
   }
@@ -67,7 +67,7 @@ class UserLayout extends React.PureComponent {
                     display: 'inline-block',
                     verticalAlign: 'middle',
                     marginBottom: 0
-                  }}>好雨云帮</h1>
+                  }}>应用交付平台</h1>
                 </Link>
               </div>
               <div className={styles.desc}>无服务器PaaS、以应用为中心、软件定义一切</div>

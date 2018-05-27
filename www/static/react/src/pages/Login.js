@@ -114,7 +114,7 @@ class LoginPage extends Component {
 		const redirect = this.props.match.params.redirect;
 		return (
 			<div className="login-wrap">
-				<Card title="欢迎登录好雨云帮">
+				<Card title="欢迎登录应用交付平台">
 					<LoginForm dispatch={this.props.dispatch} redirect={redirect} />
 				</Card>
 			</div>

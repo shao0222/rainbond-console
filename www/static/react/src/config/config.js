@@ -9,6 +9,6 @@ if(process.env.NODE_ENV == 'dev') {
 
 const config = {
 	baseUrl: baseUrl,
-	projectName: '好雨云帮'
+	projectName: '应用交付平台'
 }
 export default config

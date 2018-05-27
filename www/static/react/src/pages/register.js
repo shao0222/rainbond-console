@@ -43,7 +43,7 @@ class Register extends Component {
 		const redirect = this.props.match.params.redirect;
 		return (
 			<div className="register-wrap">
-				<Card title="欢迎注册好雨云帮">
+				<Card title="欢迎注册应用交付平台">
 					<div className="register-form-wrap">
 						{!this.state.success ? <RegisterForm dispatch={this.props.dispatch} redirect={redirect} onSubmit={this.onSubmit} /> : '' }
 					</div>
