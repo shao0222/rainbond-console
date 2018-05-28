@@ -41,6 +41,7 @@ const menuData = [
   }, {
     name: '财务中心',
     icon: 'red-envelope',
+    hideInMenu: true,
     path: `team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/finance`
   }
 ];
