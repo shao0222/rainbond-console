@@ -25,15 +25,15 @@ const links = [
 
 const copyright = <div>Copyright
   <Icon type="copyright"/>
-  2018 好雨科技</div>;
+  2018 云平台</div>;
 
 class UserLayout extends React.PureComponent {
   getPageTitle() {
     const {routerData, location} = this.props;
     const {pathname} = location;
-    let title = '好雨云帮 | 应用一键部署';
+    let title = '云平台 | 应用一键部署';
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - 好雨云帮 | 应用一键部署`;
+      title = `${routerData[pathname].name} - 云平台 | 应用一键部署`;
     }
     return title;
   }
@@ -55,19 +55,19 @@ class UserLayout extends React.PureComponent {
             <div className={styles.top}>
               <div className={styles.header}>
                 <Link to="/">
-                  <img
+                  {/* <img
                     style={{
                     verticalAlign: 'middle'
                   }}
                     alt="logo"
                     className={styles.logo}
-                    src={logo}/>
+                    src={logo}/> */}
                   <h1
                     style={{
                     display: 'inline-block',
                     verticalAlign: 'middle',
                     marginBottom: 0
-                  }}>好雨云帮</h1>
+                  }}>云平台</h1>
                 </Link>
               </div>
               <div className={styles.desc}>无服务器PaaS、以应用为中心、软件定义一切</div>

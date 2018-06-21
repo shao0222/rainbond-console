@@ -13,7 +13,7 @@ var actionCNMap = {
     "own_money": "应用欠费关闭",
     "expired": "应用过期关闭",
     "share-ys": "分享到云市",
-    "share-yb": "分享到云帮",
+    "share-yb": "分享到云平台",
     "reboot"  :"应用重启" ,
     "git-change":"仓库地址修改",
     "imageUpgrade":"应用更新"

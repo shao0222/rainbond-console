@@ -34,7 +34,7 @@ const links = [
     title: '自定义源码',
     href: `/team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/create/code/custom`
   }, {
-    title: '好雨代码仓库',
+    title: '云平台代码仓库',
     href: `/team/${globalUtil.getCurrTeamName()}/region/${globalUtil.getCurrRegionName()}/create/code/goodrain`
   }, {
     title: 'github项目',

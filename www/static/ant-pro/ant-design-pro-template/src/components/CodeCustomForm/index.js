@@ -28,7 +28,7 @@ class ShowKeyModal extends PureComponent {
 				onCancel={onCancel}
 				footer={[<Button onClick={onCancel}>已授权</Button>]}
 			>
-				<p><Icon type="info-circle-o" /> 请拷贝如下Key到您的私有Git仓库进行授权，云帮平台方可访问您的私有Git仓库</p>
+				<p><Icon type="info-circle-o" /> 请拷贝如下Key到您的私有Git仓库进行授权，云平台方可访问您的私有Git仓库</p>
 				<p style={{border: '1px dotted #dcdcdc', padding: '20px'}}>
 					sdfsdfsdfsdf
 				</p>
