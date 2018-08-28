@@ -12,28 +12,28 @@ image_name="rbd-app-ui"
 #else
 #    buildRelease=0.$git_commit
 #fi
-VERSION=$(git branch | grep '^*' | cut -d ' ' -f 2 | awk -F'V' '{print $2}')
+VERSION=telihui
 buildTime=$(date +%F-%H)
 
-function release(){
+function release() {
 
-  echo "pull newest code..."
-  git pull
+	echo "pull newest code..."
+	# git pull
 
-  # get commit sha
-  git_commit=$(git log -n 1 --pretty --format=%h)
+	# get commit sha
+	git_commit=$(git log -n 1 --pretty --format=%h)
 
-  # get git describe info
-  branch_info=$(git branch | grep '^*' | cut -d ' ' -f 2 | tr '-' " ")
-  release_desc=${branch_info}-${git_commit}-${buildTime}
+	# get git describe info
+	branch_info=$(git branch | grep '^*' | cut -d ' ' -f 2 | tr '-' " ")
+	release_desc=${branch_info}-${git_commit}-${buildTime}
 
-  sed "s/__RELEASE_DESC__/${release_desc}/" Dockerfile.release > Dockerfile.build
-  docker build -t rainbond/${image_name}:${VERSION} -f Dockerfile.build .
-  rm -r ./Dockerfile.build
+	sed "s/__RELEASE_DESC__/${release_desc}/" Dockerfile.release >Dockerfile.build
+	docker build -t rainbond/${image_name}:${VERSION} -f Dockerfile.build .
+	rm -r ./Dockerfile.build
 }
 
 case $1 in
-    *)
-    release
-    ;;
+*)
+	release
+	;;
 esac
