@@ -5,7 +5,7 @@
 from console.repositories.app_config import dep_relation_repo, port_repo, env_var_repo
 from console.repositories.app import service_repo
 
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 import logging
 
 region_api = RegionInvokeApi()

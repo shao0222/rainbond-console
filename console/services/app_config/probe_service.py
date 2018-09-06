@@ -3,8 +3,8 @@
   Created on 18/1/26.
 """
 from console.repositories.probe_repo import probe_repo
-from www.apiclient.regionapi import RegionInvokeApi
-from www.utils.crypt import make_uuid
+from console.apiclient.regionapi import RegionInvokeApi
+from console.utils.crypt import make_uuid
 import logging
 import copy
 
@@ -141,7 +141,7 @@ class ProbeService(object):
         prob_data["enterprise_id"] = tenant.enterprise_id
         if service.create_status == "complete":
             res, body = region_api.update_service_probec(service.service_region, tenant.tenant_name,
-                                                        service.service_alias, prob_data)
+                                                         service.service_alias, prob_data)
             logger.debug("update probe action status {0}".format(res.status))
         console_probe.pop("probe_id")
         console_probe.pop("service_id")

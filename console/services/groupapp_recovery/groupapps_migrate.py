@@ -3,24 +3,24 @@
   Created on 2018/5/25.
   应用迁移
 """
+import json
+import logging
 from django.db import transaction
 
 from console.repositories.backup_repo import backup_record_repo
 from console.repositories.group import group_repo
-from www.apiclient.regionapi import RegionInvokeApi
-from www.utils.crypt import make_uuid
+from console.apiclient.regionapi import RegionInvokeApi
+from console.utils.crypt import make_uuid
 from console.repositories.migration_repo import migrate_repo
-from www.models.main import TenantServiceInfo, TenantServiceEnvVar, TenantServiceVolume, TenantServicesPort, \
+from console.models.services import TenantServiceInfo, TenantServiceEnvVar, TenantServiceVolume, TenantServicesPort, \
     TenantServiceEnv, ServiceDomain, ServiceEvent, ServiceProbe, TenantServiceAuth, ImageServiceRelation, \
     TenantServiceRelation, \
     TenantServiceMountRelation
-from console.models.main import ServiceRelPerms, ServiceSourceInfo
+from console.models.services import ServiceRelPerms, ServiceSourceInfo
 from console.repositories.team_repo import team_repo
-from www.models.label import ServiceLabels
+from console.models.labels import ServiceLabels
 from console.services.group_service import group_service
 from console.constants import AppMigrateType
-import json
-import logging
 
 region_api = RegionInvokeApi()
 logger = logging.getLogger("default")
@@ -110,7 +110,8 @@ class GroupappsMigrateService(object):
             "slug_info": service_slug,
             "image_info": service_image
         }
-        body = region_api.star_apps_migrate_task(migrate_region, migrate_team.tenant_name, new_backup_record.backup_id, data)
+        body = region_api.star_apps_migrate_task(migrate_region, migrate_team.tenant_name, new_backup_record.backup_id,
+                                                 data)
 
         # 创建迁移记录
         params = {
@@ -164,7 +165,8 @@ class GroupappsMigrateService(object):
             if status == "success":
                 with transaction.atomic():
                     try:
-                        self.save_data(migrate_team, migrate_record.migrate_region, user, service_change, json.loads(metadata), migrate_record.group_id)
+                        self.save_data(migrate_team, migrate_record.migrate_region, user, service_change,
+                                       json.loads(metadata), migrate_record.group_id)
                     except Exception as e:
                         migrate_record.status = "failed"
                         migrate_record.save()
@@ -193,7 +195,8 @@ class GroupappsMigrateService(object):
             new_service_id = changed_service_map[service_base_info["service_id"]]["ServiceID"]
             new_service_alias = changed_service_map[service_base_info["service_id"]]["ServiceAlias"]
 
-            ts = self.__init_app(app["service_base"], new_service_id, new_service_alias, user, migrate_region, migrate_tenant)
+            ts = self.__init_app(app["service_base"], new_service_id, new_service_alias, user, migrate_region,
+                                 migrate_tenant)
             old_new_service_id_map[app["service_base"]["service_id"]] = ts.service_id
             group_service.add_service_to_group(migrate_tenant, migrate_region, group.ID, ts.service_id)
             self.__save_env(migrate_tenant, ts, app["service_env_vars"])
@@ -385,5 +388,6 @@ class GroupappsMigrateService(object):
 
     def update_migrate_original_group_id(self, old_original_group_id, new_original_group_id):
         migrate_repo.get_by_original_group_id(old_original_group_id).update(original_group_id=new_original_group_id)
+
 
 migrate_service = GroupappsMigrateService()

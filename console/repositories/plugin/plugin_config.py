@@ -2,7 +2,8 @@
 """
   Created on 18/3/4.
 """
-from www.models import PluginConfigGroup, PluginConfigItems
+from console.models.plugin import PluginConfigGroup
+from console.models.plugin import PluginConfigItems
 
 
 class PluginConfigGroupRepository(object):

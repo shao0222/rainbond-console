@@ -6,7 +6,7 @@ from console.constants import ServicePortConstants
 from console.repositories.app_config import port_repo
 import re
 
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 
 from console.services.app_config.env_service import AppEnvVarService
 import logging
@@ -55,7 +55,7 @@ class AppPortService(object):
         if code != 200:
             return code, msg, None
         if not port_alias:
-            port_alias = service.service_alias.upper()+str(container_port)
+            port_alias = service.service_alias.upper() + str(container_port)
         code, msg = self.check_port_alias(port_alias)
         if code != 200:
             return code, msg, None
@@ -222,7 +222,7 @@ class AppPortService(object):
         if code != 200:
             return code, msg, None
         return 200, u"操作成功", new_port
-    
+
     def __open_outer(self, tenant, service, deal_port):
         if deal_port.protocol != "http":
             if self.is_open_outer_steam_port(tenant.tenant_id, service.service_id, deal_port.container_port):
@@ -444,7 +444,8 @@ class AppPortService(object):
                                                            cur_region)
 
         tcp_domain_url = region_services.get_region_tcpdomain(service.service_region)
-        connect_url = "{0}.{1}.{2}.{3}".format(port.container_port, service.service_alias, tenant.tenant_name, tcp_domain_url)
+        connect_url = "{0}.{1}.{2}.{3}".format(port.container_port, service.service_alias, tenant.tenant_name,
+                                               tcp_domain_url)
         if port.protocol != 'http' and port.protocol != "https":
             connect_url = tcp_domain_url
         if port.lb_mapping_port != 0:
@@ -482,7 +483,7 @@ class AppPortService(object):
                     domain = str(domain_split[0])
 
             url = "http://{0}.{1}.{2}.{3}:{4}".format(port, service.service_alias, tenant.tenant_name,
-                                                     domain,
+                                                      domain,
                                                       suf_port)
         urls = [url]
         domains = domain_repo.get_service_domain_by_container_port(service.service_id, port)

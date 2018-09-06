@@ -12,7 +12,6 @@ from www.auth import authenticate, login, logout
 from www.forms.account import UserLoginForm, RegisterForm, PasswordResetForm, PasswordResetBeginForm
 from www.models import Users, Tenants, TenantRegionInfo, TenantServiceInfo, AnonymousUser, PermRelTenant, \
     PermRelService, PhoneCode, TenantRecharge, TenantEnterprise
-from www.models import WeChatUser
 from www.utils.crypt import AuthCode
 from www.utils import crypt
 from www.utils.mail import send_reset_pass_mail
@@ -20,7 +19,6 @@ from www.sms_service import send_phone_message
 from www.db import BaseConnection
 from www.services import enterprise_svc, user_svc
 from www.services.sso import GoodRainSSOApi, SSO_BASE_URL
-from www.models.activity import TenantActivity
 import datetime
 import time
 import random

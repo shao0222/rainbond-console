@@ -5,8 +5,8 @@
 
 from console.repositories.label_repo import service_label_repo, node_label_repo, label_repo
 from console.repositories.region_repo import region_repo
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models import ServiceLabels
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.labels import ServiceLabels
 from console.services.app_actions.app_log import AppEventService
 import logging
 

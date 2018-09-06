@@ -2,12 +2,12 @@
 """
   Created on 2018/5/23.
 """
-from cadmin.models import ConsoleSysConfig
+from console.models.cadmin_model import ConsoleSysConfig
 from console.repositories.backup_repo import backup_record_repo
 from console.services.group_service import group_service
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 from console.appstore.appstore import app_store
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 from console.utils.timeutil import current_time_str
 from console.repositories.compose_repo import compose_repo, compose_relation_repo
 from console.repositories.group import group_repo, group_service_relation_repo
@@ -18,13 +18,12 @@ from console.repositories.event_repo import event_repo
 from console.repositories.perm_repo import service_perm_repo
 from console.repositories.probe_repo import probe_repo
 from console.repositories.app import service_source_repo
-from console.repositories.plugin import app_plugin_relation_repo, plugin_repo, config_group_repo, config_item_repo, \
-    app_plugin_attr_repo, plugin_version_repo, service_plugin_config_repo
+from console.repositories.plugin import app_plugin_relation_repo, service_plugin_config_repo
 
 import json
 import logging
 from console.repositories.app import service_repo
-from www.utils.crypt import AuthCode
+from console.utils.crypt import AuthCode
 
 logger = logging.getLogger("default")
 region_api = RegionInvokeApi()

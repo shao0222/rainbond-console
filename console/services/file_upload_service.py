@@ -3,18 +3,18 @@
   Created on 18/3/13.
 """
 import oss2
-from goodrain_web.custom_config import custom_config as custom_settings
 from django.conf import settings
 import logging
-from www.apiclient.baseclient import client_auth_service
-from www.utils.crypt import make_uuid
 import requests
 from addict import Dict
 import json
 import os
+
+from goodrain_web.custom_config import custom_config as custom_settings
+from console.market.baseclient import client_auth_service
+from console.utils.crypt import make_uuid
 from console.services.region_services import region_services
 from console.repositories.market_app_repo import app_import_record_repo
-
 
 logger = logging.getLogger("default")
 
@@ -111,7 +111,6 @@ class FileUploadService(object):
             logger.debug("file upload failed !")
             import_record.delete()
             return 500, "上传失败", None
-
 
 
 upload_service = FileUploadService()

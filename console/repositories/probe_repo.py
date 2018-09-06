@@ -2,7 +2,7 @@
 """
   Created on 18/1/26.
 """
-from www.models.main import ServiceProbe
+from console.models.services import ServiceProbe
 import logging
 
 logger = logging.getLogger("default")

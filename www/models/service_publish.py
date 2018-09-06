@@ -10,11 +10,18 @@ from www.utils.crypt import make_uuid
 from django.conf import settings
 from datetime import date, datetime
 import json
+
 # Create your models here.
 
 
 app_status = (
     ('show', u'显示'), ("hidden", u'隐藏'),
+)
+level_choice = (
+    ('end', 'end'), ('secondary', 'secondary'), ('root', 'root')
+)
+group_publish_type = (
+    ('services_group', u'应用组'), ("cloud_frame", u'云框架'),
 )
 
 
@@ -26,6 +33,7 @@ def logo_path(instance, filename):
 # 服务--app关系表格
 class AppService(BaseModel):
     """ 服务发布表格 """
+
     class Meta:
         db_table = 'app_service'
         unique_together = ('service_key', 'app_version')
@@ -53,7 +61,8 @@ class AppService(BaseModel):
     min_memory = models.IntegerField(help_text=u"内存大小单位（M）", default=256)
     inner_port = models.IntegerField(help_text=u"内部端口", default=0)
     volume_mount_path = models.CharField(max_length=50, null=True, blank=True, help_text=u"mount目录")
-    service_type = models.CharField(max_length=50, null=True, blank=True, help_text=u"服务类型:web,mysql,redis,mongodb,phpadmin")
+    service_type = models.CharField(max_length=50, null=True, blank=True,
+                                    help_text=u"服务类型:web,mysql,redis,mongodb,phpadmin")
     is_init_accout = models.BooleanField(default=False, blank=True, help_text=u"是否初始化账户")
     is_base = models.BooleanField(default=False, blank=True, help_text=u"是否基础服务")
     is_outer = models.BooleanField(default=False, blank=True, help_text=u"是否发布到公有市场")
@@ -77,10 +86,11 @@ class AppService(BaseModel):
 
     def __unicode__(self):
         return u"{0}({1})".format(self.service_id, self.service_key)
-    
+
 
 class AppServiceEnv(BaseModel):
     """ 服务环境配置 """
+
     class Meta:
         db_table = 'app_service_env_var'
         unique_together = ('service_key', 'app_version', 'attr_name')
@@ -109,6 +119,7 @@ class AppServiceEnv(BaseModel):
 
 class AppServicePort(BaseModel):
     """ 服务端口配置 """
+
     class Meta:
         db_table = 'app_service_port'
         unique_together = ('service_key', 'app_version', 'container_port')
@@ -122,9 +133,9 @@ class AppServicePort(BaseModel):
     is_outer_service = models.BooleanField(default=False, blank=True, help_text=u"是否外部服务；0:不绑定；1:绑定")
 
 
-
 class AppServiceRelation(BaseModel):
     """ 服务依赖关系 """
+
     class Meta:
         db_table = 'app_service_relation'
 
@@ -146,13 +157,7 @@ class AppServiceRelation(BaseModel):
         return data
 
 
-level_choice = (
-    ('end', 'end'), ('secondary', 'secondary'), ('root', 'root')
-)
-
-
 class AppServiceCategory(BaseModel):
-
     class Meta:
         db_table = 'app_service_category'
 
@@ -160,10 +165,9 @@ class AppServiceCategory(BaseModel):
     level = models.CharField(max_length=20, choices=level_choice, help_text=u"分类级别")
     parent = models.IntegerField(db_index=True, default=0, help_text=u"父分类")
     root = models.IntegerField(db_index=True, default=0, help_text=u"根分类")
-    
-    
-class ServiceExtendMethod(BaseModel):
 
+
+class ServiceExtendMethod(BaseModel):
     class Meta:
         db_table = 'app_service_extend_method'
 
@@ -190,8 +194,10 @@ class ServiceExtendMethod(BaseModel):
 
 class AppServiceVolume(BaseModel):
     """发布数据持久化表格"""
+
     class Meta:
         db_table = 'app_service_volume'
+
     service_key = models.CharField(max_length=32, help_text=u"服务key")
     app_version = models.CharField(max_length=20, null=False, help_text=u"当前最新版本")
     category = models.CharField(max_length=50, null=True, blank=True, help_text=u"服务类型")
@@ -212,8 +218,10 @@ class AppServiceVolume(BaseModel):
 
 class AppServiceShareInfo(BaseModel):
     """普通发布存储环境是否可修改信息"""
+
     class Meta:
         db_table = 'app_service_share'
+
     tenant_id = models.CharField(max_length=32, help_text=u"租户id")
     service_id = models.CharField(max_length=32, help_text=u"服务id")
 
@@ -223,6 +231,7 @@ class AppServiceShareInfo(BaseModel):
 
 class AppServiceExtend(BaseModel):
     """发布服务的扩展信息"""
+
     class Meta:
         db_table = 'app_service_extend'
 
@@ -247,6 +256,7 @@ class AppServiceImages(BaseModel):
 
 class AppServicePackages(BaseModel):
     """服务套餐信息"""
+
     class Meta:
         db_table = 'app_service_packages'
 
@@ -259,10 +269,6 @@ class AppServicePackages(BaseModel):
     price = models.FloatField(help_text=u"定价元/月")
     total_price = models.FloatField(help_text=u"定价元/月")
     dep_info = models.CharField(max_length=2000, default='[]', help_text=u"依赖服务内存、节点信息")
-
-group_publish_type = (
-    ('services_group', u'应用组'), ("cloud_frame", u'云框架'),
-)
 
 
 class AppServiceGroup(BaseModel):
@@ -279,7 +285,8 @@ class AppServiceGroup(BaseModel):
     service_ids = models.CharField(max_length=1024, null=False, help_text=u"对应的服务id")
     is_success = models.BooleanField(default=False, help_text=u"发布是否成功")
     step = models.IntegerField(default=0, help_text=u"当前发布进度")
-    publish_type = models.CharField(max_length=16, default="services_group", choices=group_publish_type, help_text=u"发布的应用组类型")
+    publish_type = models.CharField(max_length=16, default="services_group", choices=group_publish_type,
+                                    help_text=u"发布的应用组类型")
     group_version = models.CharField(max_length=20, null=False, default="0.0.1", help_text=u"服务组版本")
     is_market = models.BooleanField(default=False, blank=True, help_text=u"是否发布到公有市场")
     desc = models.CharField(max_length=400, null=True, blank=True, help_text=u"更新说明")

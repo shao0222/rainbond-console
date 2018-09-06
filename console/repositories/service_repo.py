@@ -4,8 +4,11 @@ import logging
 from console.repositories.team_repo import team_repo
 from console.services.service_services import base_service
 from openapi.controllers.openservicemanager import OpenTenantServiceManager
-from www.models import TenantServiceInfo, ServiceGroupRelation, ServiceGroup, ServiceEvent
-from www.utils.status_translate import get_status_info_map
+from console.models.services import TenantServiceInfo
+from console.models.services import ServiceGroupRelation
+from console.models.services import ServiceGroup
+from console.models.services import ServiceEvent
+from console.utils.status_translate import get_status_info_map
 
 logger = logging.getLogger("default")
 

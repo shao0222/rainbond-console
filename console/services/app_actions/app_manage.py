@@ -7,9 +7,8 @@ import datetime
 import json
 from console.services.app_actions import AppEventService
 from console.services.app_config import AppServiceRelationService
-from www.models.main import ServiceGroupRelation
-from www.apiclient.regionapi import RegionInvokeApi
-from www.tenantservice.baseservice import TenantUsedResource, BaseTenantService
+from console.apiclient.regionapi import RegionInvokeApi
+from console.tenantservice.baseservice import TenantUsedResource, BaseTenantService
 import logging
 from console.repositories.app_config import env_var_repo, mnt_repo, volume_repo, port_repo, \
     auth_repo, domain_repo, dep_relation_repo, service_attach_repo, create_step_repo, service_payment_repo
@@ -22,7 +21,7 @@ from console.repositories.plugin import app_plugin_relation_repo
 from console.repositories.perm_repo import service_perm_repo
 from console.repositories.compose_repo import compose_relation_repo
 from console.repositories.label_repo import service_label_repo
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 from console.repositories.event_repo import event_repo
 
 tenantUsedResource = TenantUsedResource()

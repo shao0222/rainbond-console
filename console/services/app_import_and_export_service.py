@@ -15,11 +15,11 @@ from console.repositories.group import group_repo
 from console.repositories.market_app_repo import app_export_record_repo, app_import_record_repo
 from console.repositories.region_repo import region_repo
 from console.services.app_config.app_relation_service import AppServiceRelationService
-from www.apiclient.baseclient import client_auth_service
-from www.apiclient.marketclient import MarketOpenAPI
-from www.apiclient.regionapi import RegionInvokeApi
-from www.tenantservice.baseservice import BaseTenantService
-from www.utils.crypt import make_uuid
+from console.market.baseclient import client_auth_service
+from console.market.market_interface import MarketOpenAPI
+from console.apiclient.regionapi import RegionInvokeApi
+from console.tenantservice.baseservice import BaseTenantService
+from console.utils.crypt import make_uuid
 
 logger = logging.getLogger("default")
 baseService = BaseTenantService()
@@ -127,7 +127,9 @@ class AppExportService(object):
             return None
 
     def get_export_status(self, team, app):
-        app_export_records = app_export_record_repo.get_enter_export_record_by_key_and_version(team.enterprise_id, app.group_key, app.version)
+        app_export_records = app_export_record_repo.get_enter_export_record_by_key_and_version(team.enterprise_id,
+                                                                                               app.group_key,
+                                                                                               app.version)
         rainbond_app_init_data = {
             "is_export_before": False,
         }
@@ -192,7 +194,8 @@ class AppExportService(object):
                                                                       export_format)
 
     def get_export_record_status(self, enterprise_id, app):
-        records = app_export_record_repo.get_enter_export_record_by_key_and_version(enterprise_id, app.group_key, app.version)
+        records = app_export_record_repo.get_enter_export_record_by_key_and_version(enterprise_id, app.group_key,
+                                                                                    app.version)
         export_status = "other"
         # 有一个成功即成功，全部失败为失败，全部为导出中则显示导出中
         if not records:
@@ -345,7 +348,7 @@ class AppImportService(object):
         if not image_base64_string:
             return ""
         try:
-            file_name = make_uuid() + "."+suffix
+            file_name = make_uuid() + "." + suffix
             file_path = "{0}/{1}".format("/data/media/uploads", file_name)
             with open(file_path, "wb") as f:
                 f.write(image_base64_string.decode("base64"))
@@ -362,6 +365,7 @@ class AppImportService(object):
             if import_record.status not in ("success", "failed"):
                 importing_list.append(apps_status)
         return importing_list
+
 
 export_service = AppExportService()
 import_service = AppImportService()

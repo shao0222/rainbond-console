@@ -4,7 +4,7 @@
 """
 import re
 from console.repositories.app_config import env_var_repo, compile_env_repo
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 import logging
 
 region_api = RegionInvokeApi()

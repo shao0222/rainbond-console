@@ -7,18 +7,11 @@ from www.image_service_view import ImageServiceDeploy, ImageParamsViews
 from www.services_view import *
 from www.app_services_view import *
 from www.back_services_view import *
-from www.charging_view import *
-from www.views.ajax import UpdateGroupView
-from www.views.ajax.service_group import AddGroupView, DeleteGroupView, UpdateServiceGroupView
-from www.views.batchrenew import BatchRenewView
 from www.views.service import TeamInfo
 from django.contrib.auth.decorators import login_required
-from www import alipay_view
-from django.views.decorators.csrf import csrf_exempt
 from www.views.servicepublish import PublishServiceView, PublishServiceRelationView, PublishServiceDetailView
 from www.views.serviceshare import *
 from www.views.consume import *
-from  www.views.servicemonitor import *
 from www.views.third_app import *
 from www.views.servicegroup import *
 from www.group_services_view import *
@@ -54,19 +47,8 @@ urlpatterns = patterns(
     url(r'^/(?P<serviceAlias>[\w\-]+)/latest-log/$', login_required(ServiceLatestLog.as_view())),
     url(r'^/(?P<serviceAlias>[\w\-]+)/history-log/$', login_required(ServiceHistoryLog.as_view())),
     url(r'^/(?P<serviceAlias>[\w\-]+)/docker/$', login_required(ServiceDockerContainer.as_view())),
-    
-    url(r'^/recharge/$', login_required(Recharging.as_view())),
-    url(r'^/service-cost/$', login_required(RegionsServiceCostView.as_view())),
-    url(r'^/batch-renew/$', login_required(ServiceBatchRenewView.as_view())),
-    url(r'^/service-renew/$', login_required(BatchRenewView.as_view())),
-    url(r'^/consume/$', login_required(Account.as_view())),
-    url(r'^/bill/$', login_required(AccountBill.as_view())),
-    url(r'^/paymodel/$', login_required(PayModelView.as_view())),
-    url(r'^/license/$', login_required(AssistantView.as_view())),
-    
-    url(r'^/recharge/alipay$', csrf_exempt(login_required(alipay_view.submit))),
-    url(r'^/recharge/alipay-return$', alipay_view.return_url),
-    url(r'^/recharge/alipay-notify$', csrf_exempt(alipay_view.notify_url)),
+
+
     
     # new publish service
     url(r'^/(?P<serviceAlias>[\w\-]+)/publish/$', PublishServiceDetailView.as_view()),

@@ -2,7 +2,7 @@
 """
   Created on 18/3/4.
 """
-from www.models import PluginBuildVersion
+from console.models.plugin import PluginBuildVersion
 
 
 class PluginVersionRepository(object):

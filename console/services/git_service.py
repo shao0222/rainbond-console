@@ -2,15 +2,15 @@
 """
   Created on 18/1/9.
 """
-from www.db import BaseConnection
-from www.gitlab_http import GitlabApi
-from www.tenantservice.baseservice import CodeRepositoriesService
 import json
-from www.utils.giturlparse import parse as git_url_parse
 import logging
+from django.conf import settings
+
+from console.gitlab_http import GitlabApi
+from console.tenantservice.baseservice import CodeRepositoriesService
+from console.utils.giturlparse import parse as git_url_parse
 from console.repositories.team_repo import team_gitlab_repo
 from goodrain_web.custom_config import custom_config
-from django.conf import settings
 from console.constants import AppConstants
 
 codeRepositoriesService = CodeRepositoriesService()
@@ -164,7 +164,7 @@ class GitCodeService(object):
         import re
         r = re.compile(u'^[a-zA-Z0-9_\\-]+$')
         if not r.match(project_name.decode("utf-8")):
-            return 400, u"项目名称只支持英文下划线和中划线",None
+            return 400, u"项目名称只支持英文下划线和中划线", None
         namespace = settings.GITLAB_ADMIN_NAME
         is_project_exist = self.is_gitlab_project_exist(namespace, tenant, project_name)
         if is_project_exist:

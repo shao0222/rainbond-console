@@ -2,17 +2,18 @@
 """
   Created on 18/2/8.
 """
-from console.constants import AppConstants
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models import TenantServiceInfo
-from www.tenantservice.baseservice import BaseTenantService
-from www.utils.crypt import make_uuid
-from console.utils.timeutil import current_time_str
-from console.repositories.compose_repo import compose_repo, compose_relation_repo
-from console.repositories.app import service_repo
 import logging
 import yaml
 import datetime
+
+from console.constants import AppConstants
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.services import TenantServiceInfo
+from console.tenantservice.baseservice import BaseTenantService
+from console.utils.crypt import make_uuid
+from console.utils.timeutil import current_time_str
+from console.repositories.compose_repo import compose_repo, compose_relation_repo
+from console.repositories.app import service_repo
 from console.services.app import app_service
 from StringIO import StringIO
 from console.services.app_check_service import AppCheckService
@@ -122,7 +123,7 @@ class ComposeService(object):
                 group_compose.save()
         except Exception as e:
             logger.exception(e)
-            return 500, "{0}".format(e.message),service_list
+            return 500, "{0}".format(e.message), service_list
 
         return 200, "success", service_list
 
@@ -207,7 +208,7 @@ class ComposeService(object):
         return service_repo.get_services_by_service_ids(*service_ids)
 
     def give_up_compose_create(self, tenant, group_id, compose_id):
-        self.__delete_created_compose_info(tenant,compose_id)
+        self.__delete_created_compose_info(tenant, compose_id)
 
         compose_repo.delete_group_compose_by_compose_id(compose_id)
         group_service.delete_group(group_id)
@@ -221,7 +222,6 @@ class ComposeService(object):
                 logger.error("delete compose services error {0}".format(msg))
 
         compose_relation_repo.delete_compose_service_relation_by_compose_id(compose_id)
-
 
     def wrap_compose_check_info(self, data):
         rt_info = dict()
@@ -274,5 +274,6 @@ class ComposeService(object):
 
     def get_service_compose_id(self, service):
         return compose_relation_repo.get_compose_id_by_service_id(service.service_id)
+
 
 compose_service = ComposeService()

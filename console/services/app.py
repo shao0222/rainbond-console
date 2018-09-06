@@ -18,15 +18,14 @@ from console.repositories.perm_repo import perms_repo
 from console.services.app_config.port_service import AppPortService
 from console.services.app_config.probe_service import ProbeService
 
-from www.apiclient.regionapi import RegionInvokeApi
-from www.github_http import GitHubApi
-from www.models import TenantServiceInfo, ServiceConsume
-from www.tenantservice.baseservice import TenantUsedResource, CodeRepositoriesService, BaseTenantService, \
+from console.apiclient.regionapi import RegionInvokeApi
+from console.github_http import GitHubApi
+from console.models.services import TenantServiceInfo, ServiceConsume
+from console.tenantservice.baseservice import TenantUsedResource, CodeRepositoriesService, BaseTenantService, \
     ServicePluginResource
-from www.utils.crypt import make_uuid
-from www.utils.status_translate import get_status_info_map
+from console.utils.crypt import make_uuid
+from console.utils.status_translate import get_status_info_map
 from django.conf import settings
-
 
 tenantUsedResource = TenantUsedResource()
 logger = logging.getLogger("default")
@@ -37,6 +36,7 @@ servicePluginResource = ServicePluginResource()
 gitHubClient = GitHubApi()
 port_service = AppPortService()
 probe_service = ProbeService()
+
 
 class AppService(object):
     def check_service_cname(self, tenant, service_cname, region):
@@ -307,12 +307,12 @@ class AppService(object):
         service_dep_relations = dep_relation_repo.get_service_dependencies(tenant.tenant_id, service.service_id)
         # 依赖
         depend_ids = [{
-                          "dep_order": dep.dep_order,
-                          "dep_service_type": dep.dep_service_type,
-                          "depend_service_id": dep.dep_service_id,
-                          "service_id": dep.service_id,
-                          "tenant_id": dep.tenant_id
-                      } for dep in service_dep_relations]
+            "dep_order": dep.dep_order,
+            "dep_service_type": dep.dep_service_type,
+            "depend_service_id": dep.dep_service_id,
+            "service_id": dep.service_id,
+            "tenant_id": dep.tenant_id
+        } for dep in service_dep_relations]
         data["depend_ids"] = depend_ids
         # 端口
         ports = port_repo.get_service_ports(tenant.tenant_id, service.service_id)

@@ -7,9 +7,8 @@ import re
 import datetime
 from console.repositories.region_repo import region_repo
 from console.constants import DomainType
-from www.apiclient.regionapi import RegionInvokeApi
-from www.utils.crypt import make_uuid
-
+from console.apiclient.regionapi import RegionInvokeApi
+from console.utils.crypt import make_uuid
 
 region_api = RegionInvokeApi()
 

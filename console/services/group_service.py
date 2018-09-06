@@ -2,11 +2,12 @@
 """
   Created by leon on 18/1/5.
 """
+import logging
+import re
+
 from console.repositories.group import group_repo, group_service_relation_repo
 from console.repositories.app import service_repo
 from console.repositories.compose_repo import compose_repo
-import logging
-import re
 from console.repositories.backup_repo import backup_record_repo
 
 logger = logging.getLogger("default")
@@ -147,5 +148,6 @@ class GroupService(object):
         service_ids = [gs.service_id for gs in gsr]
         services = service_repo.get_services_by_service_ids(*service_ids)
         return services
+
 
 group_service = GroupService()

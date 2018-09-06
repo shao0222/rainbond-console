@@ -2,7 +2,9 @@
 """
   Created on 18/1/29.
 """
-from www.models import TenantServicePluginRelation, TenantServicePluginAttr, ServicePluginConfigVar
+from console.models.plugin import TenantServicePluginRelation
+from console.models.plugin import TenantServicePluginAttr
+from console.models.plugin import ServicePluginConfigVar
 
 
 class AppPluginRelationRepo(object):

@@ -2,7 +2,7 @@
 """
   Created on 18/1/15.
 """
-from www.utils.return_message import general_message
+from console.utils.return_message import general_message
 from rest_framework.response import Response
 
 

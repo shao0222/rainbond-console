@@ -84,34 +84,6 @@ class AnonymousUser(object):
         return False
 
 
-class WeChatConfig(models.Model):
-    """微信的accesstoken"""
-
-    class Meta:
-        db_table = "wechat_config"
-
-    MOBILE = "mobile"
-    WEB = "web"
-    BIZ = "biz"
-    BIZPLUGIN = "bizplugin"
-
-    OPEN_TYPE = ((MOBILE, "移动应用"), (WEB, "网站应用"), (BIZ, "公众帐号"), (BIZPLUGIN,
-                                                                  "公众号第三方平台"))
-
-    config = models.CharField(
-        unique=True, max_length=100, help_text=u'微信应用的名称')
-    app_id = models.CharField(max_length=200, help_text=u'app_id')
-    app_secret = models.CharField(max_length=200, help_text=u'app_secret')
-    token = models.CharField(max_length=200, help_text=u'token')
-    encrypt_mode = models.CharField(max_length=200, help_text=u'encrypt_mode')
-    encoding_aes_key = models.CharField(max_length=200, help_text=u'aes_key')
-    access_token = models.CharField(max_length=200, help_text=u'access_token')
-    access_token_expires_at = models.IntegerField(help_text=u"token过期时间")
-    refresh_token = models.CharField(
-        max_length=200, help_text=u'refresh_token,只对网页授权有效')
-    app_type = models.CharField(
-        max_length=200, choices=OPEN_TYPE, help_text=u'公众平台or网站')
-
 
 class WeChatUser(models.Model):
     """微信用户表格"""

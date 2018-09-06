@@ -4,8 +4,8 @@ import logging
 import os
 
 from cadmin.models import ConsoleSysConfig
-from www.apiclient.marketclient import MarketOpenAPI
-from www.utils.json_tool import json_load
+from console.market.market_interface import MarketOpenAPI
+from console.utils.json_tool import json_load
 from console.repositories.team_repo import team_repo
 
 logger = logging.getLogger('default')

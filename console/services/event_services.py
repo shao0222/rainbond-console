@@ -4,9 +4,9 @@ import logging
 from django.db.models import Q
 import datetime
 
-from www.apiclient.regionapi import RegionInvokeApi
-from www.db import BaseConnection
-from www.models.main import ServiceEvent
+from console.apiclient.regionapi import RegionInvokeApi
+from console.db.base import BaseConnection
+from console.models.services import ServiceEvent
 from goodrain_web.tools import JuncheePaginator
 from console.repositories.app import service_repo
 from console.services.app_actions.app_log import AppEventService
@@ -21,7 +21,7 @@ e_s = AppEventService()
 class ServiceEventDynamic(object):
     def get_team_current_region_service_events(self, region, team, page, page_size):
         dsn = BaseConnection()
-        start = (int(page)-1) * int(page_size)
+        start = (int(page) - 1) * int(page_size)
         end = page_size
 
         query_sql = ''' select e.start_time, e.event_id,s.service_alias,s.service_cname from service_event e JOIN tenant_service s on e.service_id=s.service_id  WHERE e.tenant_id="{team_id}" and s.service_region="{region_name}" ORDER BY start_time DESC LIMIT {start},{end} '''.format(
@@ -45,7 +45,7 @@ class ServiceEventDynamic(object):
                 event.service_cname = bean["service_cname"]
         return events
 
-    def get_current_region_service_events(self,region, team):
+    def get_current_region_service_events(self, region, team):
         events = event_repo.get_specified_region_events(team.tenant_id, region)
         # paginator = JuncheePaginator(events, int(page_size))
         # show_events = paginator.page(int(page))
@@ -73,7 +73,6 @@ class ServiceEventDynamic(object):
             event_list.append(result)
 
         return event_list
-
 
     def get_services_events(self, page, page_size, create_time, status, team):
 
@@ -155,7 +154,6 @@ class ServiceEventDynamic(object):
                     local_event.end_time = datetime.datetime.now()
                 local_event.save()
 
-
     def __sync_region_service_event_status(self, region, tenant_name, events, timeout=False):
         local_events_not_complete = dict()
         for event in events:
@@ -191,5 +189,6 @@ class ServiceEventDynamic(object):
                 else:
                     local_event.end_time = datetime.datetime.now()
                 local_event.save()
+
 
 service_event_dynamic = ServiceEventDynamic()

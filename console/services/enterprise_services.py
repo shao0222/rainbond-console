@@ -1,17 +1,12 @@
 # -*- coding: utf-8 -*-
-import datetime as dt
-import logging
 import random
 import string
 
-# from django.core.mail import send_mail
-
-from backends.services.exceptions import TenantExistError
 from console.repositories.enterprise_repo import enterprise_repo
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models.main import *
-from www.monitorservice.monitorhook import MonitorHook
-from www.utils.conf_tool import regionConfig
+from console.models.main import *
+from console.utils.crypt import make_uuid
+from console.monitorservice.monitorhook import MonitorHook
+
 
 logger = logging.getLogger('default')
 monitor_hook = MonitorHook()

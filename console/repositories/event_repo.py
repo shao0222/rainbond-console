@@ -2,7 +2,7 @@
 """
   Created on 18/1/24.
 """
-from www.models.main import ServiceEvent
+from console.models.services import ServiceEvent
 
 
 class ServiceEventRepository(object):
@@ -40,7 +40,6 @@ class ServiceEventRepository(object):
     def delete_event_by_build_version(self, service_id, deploy_version):
         ServiceEvent.objects.filter(deploy_version=deploy_version, service_id=service_id).delete()
 
-
     def get_specified_num_events(self, tenant_id, service_id, num=6):
         """查询指定条数的日志"""
         return ServiceEvent.objects.filter(tenant_id=tenant_id, service_id=service_id).order_by("-ID")[:num]
@@ -54,5 +53,6 @@ class ServiceEventRepository(object):
             return []
         else:
             return event_list
+
 
 event_repo = ServiceEventRepository()

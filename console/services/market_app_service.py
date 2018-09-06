@@ -9,10 +9,10 @@ import logging
 from django.db.models import Q
 
 from console.constants import AppConstants
-from console.repositories.app import service_source_repo, service_repo
+from console.repositories.app import service_source_repo
 from console.repositories.app_config import extend_repo
 from console.repositories.group import tenant_service_group_repo
-from console.repositories.market_app_repo import rainbond_app_repo, app_export_record_repo
+from console.repositories.market_app_repo import rainbond_app_repo
 from console.repositories.team_repo import team_repo
 from console.repositories.user_repo import user_repo
 from console.services.app import app_service
@@ -21,17 +21,16 @@ from console.services.app_config import env_var_service, port_service, volume_se
 from console.services.app_config.app_relation_service import AppServiceRelationService
 from console.services.group_service import group_service
 from console.utils.timeutil import current_time_str
-from www.apiclient.marketclient import MarketOpenAPI
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models import TenantServiceInfo, PluginConfigGroup, PluginConfigItems, ServicePluginConfigVar
-from www.tenantservice.baseservice import BaseTenantService
-from www.utils.crypt import make_uuid
+from console.market.market_interface import MarketOpenAPI
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.services import TenantServiceInfo
+from console.models.plugin import ServicePluginConfigVar
+from console.tenantservice.baseservice import BaseTenantService
+from console.utils.crypt import make_uuid
 from console.models.main import RainbondCenterApp
 from console.services.common_services import common_services
 from console.repositories.plugin import plugin_repo
 from console.services.plugin import plugin_version_service, plugin_service, plugin_config_service, app_plugin_service
-
-
 
 logger = logging.getLogger("default")
 baseService = BaseTenantService()
@@ -47,8 +46,8 @@ class MarketAppService(object):
         key_service_map = {}
         tenant_service_group = None
         service_probe_map = {}
-        app_plugin_map = {} # 新装服务对应的安装的插件映射
-        old_new_id_map = {} # 新旧服务映射关系
+        app_plugin_map = {}  # 新装服务对应的安装的插件映射
+        old_new_id_map = {}  # 新旧服务映射关系
         try:
             app_templates = json.loads(market_app.app_template)
             apps = app_templates["apps"]
@@ -56,7 +55,7 @@ class MarketAppService(object):
                                                                       market_app.group_key, market_app.version,
                                                                       market_app.group_name)
 
-            status, msg = self.__create_plugin_for_tenant(region, user,tenant, app_templates.get("plugins",[]))
+            status, msg = self.__create_plugin_for_tenant(region, user, tenant, app_templates.get("plugins", []))
             if status != 200:
                 raise Exception(msg)
 
@@ -111,9 +110,9 @@ class MarketAppService(object):
                     logger.exception(le)
             raise e
 
-    def __create_service_plugins(self,region, tenant, service_list, app_plugin_map, old_new_id_map):
+    def __create_service_plugins(self, region, tenant, service_list, app_plugin_map, old_new_id_map):
         try:
-            plugin_version_service.update_plugin_build_status(region,tenant)
+            plugin_version_service.update_plugin_build_status(region, tenant)
 
             for service in service_list:
                 plugins = app_plugin_map.get(service.service_id)
@@ -126,7 +125,7 @@ class MarketAppService(object):
                         plugin_version = plugin_version_service.get_newest_plugin_version(plugin_id)
                         build_version = plugin_version.build_version
 
-                        self.__save_service_config_values( service,plugin_id, build_version, service_plugin_config_vars,
+                        self.__save_service_config_values(service, plugin_id, build_version, service_plugin_config_vars,
                                                           old_new_id_map)
 
                         # 2.从console数据库取数据生成region数据
@@ -243,7 +242,7 @@ class MarketAppService(object):
             , plugin_template.get("plugin_image", None))
         plugin_build_version.build_status = ret.get('bean').get('status')
         plugin_build_version.save()
-        return 200,"success"
+        return 200, "success"
 
     def __create_tenant_service_group(self, region, tenant_id, group_id, group_key, group_version, group_alias):
         group_name = self.__generator_group_name("gr")

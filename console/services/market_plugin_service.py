@@ -2,7 +2,6 @@
 import json
 import logging
 from datetime import datetime
-
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import Q
@@ -15,9 +14,10 @@ from console.repositories.team_repo import team_repo
 from console.repositories.user_repo import user_repo
 from console.services.common_services import common_services
 from console.services.plugin import plugin_version_service, plugin_service
-from www.apiclient.marketclient import MarketOpenAPI
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models import make_uuid, TenantPlugin, PluginConfigGroup, PluginConfigItems
+from console.market.market_interface import MarketOpenAPI
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.plugin import TenantPlugin, PluginConfigGroup, PluginConfigItems
+from console.utils.crypt import make_uuid
 from www.services import plugin_svc
 
 market_api = MarketOpenAPI()

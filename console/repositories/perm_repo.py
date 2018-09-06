@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-from www.models import PermRelTenant, PermRelService
+
 from django.db import transaction
 from django.db.models import Q
-from console.models.main import TenantUserRole, TenantUserPermission, TenantUserRolePermission, PermGroup, \
-    ServiceRelPerms
+
+from console.models.main import TenantUserRole, TenantUserPermission, TenantUserRolePermission, PermGroup
+from console.models.services import ServiceRelPerms
 from console.repositories.team_repo import team_repo
-from www.models import Tenants
+from console.models.main import Tenants
+from console.models.main import PermRelTenant
+from console.models.main import PermRelService
 
 
 class PermsRepo(object):
@@ -80,6 +83,7 @@ class ServicePermRepo(object):
 
     def get_service_perms_by_service_pk(self, sid):
         return ServiceRelPerms.objects.filter(service_id=sid)
+
 
 class RoleRepo(object):
     def get_default_role_by_role_name(self, role_name, is_default=True):

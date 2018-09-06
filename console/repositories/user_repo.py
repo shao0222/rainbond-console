@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from backends.services.exceptions import UserNotExistError
-from www.models import Users
+from console.models.main import Users
 
 
 class UserRepo(object):

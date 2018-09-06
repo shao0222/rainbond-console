@@ -8,7 +8,7 @@ import logging
 from django.forms import model_to_dict
 
 from console.repositories.plugin import plugin_version_repo
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 
 logger = logging.getLogger("default")
 region_api = RegionInvokeApi()

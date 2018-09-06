@@ -1,15 +1,26 @@
 # -*- coding: utf-8 -*-
 import logging
+import re
 from datetime import datetime
-
 from django.db import models
 from django.db.models.fields.files import FileField
+from django.utils.crypto import salted_hmac
+
+
+from console.utils.crypt import make_tenant_id
+from console.utils.crypt import encrypt_passwd
 
 logger = logging.getLogger("default")
 
 app_scope = (("enterprise", u"企业"), ("team", u"团队"), ("goodrain", u"好雨云市"))
 plugin_scope = (("enterprise", u"企业"), ("team", u"团队"), ("goodrain", u"好雨云市"))
 user_identity = ((u"管理员", "admin"),)
+tenant_type = ((u"免费租户", "free"), (u"付费租户", "payed"))
+user_origion = ((u"自主注册", "registration"), (u"邀请注册", "invitation"))
+extend_method = ((u"不伸缩", 'stateless'), (u"垂直伸缩", 'vertical'))
+tenant_identity = ((u"拥有者", "owner"), (u"管理员", "admin"), (u"开发者", "developer"),
+                   (u"观察者", "viewer"), (u"访问", "access"))
+service_identity = ((u"管理员", "admin"), (u"开发者", "developer"), (u"观察者", "viewer"))
 
 
 class BaseModel(models.Model):
@@ -106,49 +117,6 @@ class RainbondCenterPlugin(BaseModel):
         return self.to_dict()
 
 
-class ServiceShareRecord(BaseModel):
-    """服务分享记录"""
-
-    class Meta:
-        db_table = "service_share_record"
-
-    group_share_id = models.CharField(max_length=32, unique=True, help_text=u"发布应用组或插件的唯一Key")
-    group_id = models.CharField(max_length=32, help_text=u"分享应用组id或者单独插件ID")
-    team_name = models.CharField(max_length=32, help_text=u"应用所在团队唯一名称")
-    event_id = models.CharField(max_length=32, help_text=u"介质同步事件ID,弃用，使用表service_share_record_event")
-    share_version = models.CharField(max_length=15, help_text=u"应用组发布版本")
-    is_success = models.BooleanField(default=False, help_text=u"发布是否成功")
-    step = models.IntegerField(default=0, help_text=u"当前发布进度")
-    create_time = models.DateTimeField(auto_now_add=True, help_text=u"创建时间")
-    update_time = models.DateTimeField(auto_now_add=True, help_text=u"更新时间")
-
-    def __unicode__(self):
-        return self.to_dict()
-
-
-class ServiceShareRecordEvent(BaseModel):
-    """服务分享订单关联发布事件"""
-
-    class Meta:
-        db_table = "service_share_record_event"
-
-    record_id = models.IntegerField(help_text=u"关联的订单ID")
-    region_share_id = models.CharField(max_length=36, help_text=u"应用数据中心分享反馈ID")
-    team_name = models.CharField(max_length=32, help_text=u"应用所在团队唯一名称")
-    service_key = models.CharField(max_length=32, help_text=u"对应应用key")
-    service_id = models.CharField(max_length=32, help_text=u"对应应用ID")
-    service_alias = models.CharField(max_length=10, help_text=u"对应应用别名")
-    service_name = models.CharField(max_length=32, help_text=u"对应应用名称")
-    team_id = models.CharField(max_length=32, help_text=u"对应所在团队ID")
-    event_id = models.CharField(max_length=32, default="", help_text=u"介质同步事件ID")
-    event_status = models.CharField(max_length=32, default="not_start", help_text=u"事件状态")
-    create_time = models.DateTimeField(auto_now_add=True, help_text=u"创建时间")
-    update_time = models.DateTimeField(auto_now_add=True, help_text=u"更新时间")
-
-    def __unicode__(self):
-        return self.to_dict()
-
-
 class PluginShareRecordEvent(BaseModel):
     """插件分享订单关联发布事件"""
 
@@ -203,20 +171,6 @@ class ComposeServiceRelation(BaseModel):
     create_time = models.DateTimeField(auto_now_add=True, null=True, blank=True, help_text=u"创建时间")
 
 
-class ServiceSourceInfo(BaseModel):
-    """服务源信息"""
-
-    class Meta:
-        db_table = "service_source"
-
-    service_id = models.CharField(max_length=32, help_text=u"服务ID")
-    team_id = models.CharField(max_length=32, help_text=u"服务所在团队ID")
-    user_name = models.CharField(max_length=32, null=True, blank=True, help_text=u"用户名")
-    password = models.CharField(max_length=32, null=True, blank=True, help_text=u"密码")
-    extend_info = models.CharField(max_length=1024, null=True, blank=True, default="", help_text=u"扩展信息")
-    create_time = models.DateTimeField(auto_now_add=True, null=True, blank=True, help_text=u"创建时间")
-
-
 class TeamGitlabInfo(BaseModel):
     class Meta:
         db_table = "team_gitlab_info"
@@ -230,118 +184,6 @@ class TeamGitlabInfo(BaseModel):
         max_length=100, null=True, blank=True, help_text=u"代码版本")
     create_time = models.DateTimeField(
         auto_now_add=True, blank=True, help_text=u"创建时间")
-
-
-class ServiceRecycleBin(BaseModel):
-    class Meta:
-        db_table = 'tenant_service_recycle_bin'
-        unique_together = ('tenant_id', 'service_alias')
-
-    service_id = models.CharField(
-        max_length=32, unique=True, help_text=u"服务id")
-    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
-    service_key = models.CharField(max_length=32, help_text=u"服务key")
-    service_alias = models.CharField(max_length=100, help_text=u"服务别名")
-    service_cname = models.CharField(
-        max_length=100, default='', help_text=u"服务名")
-    service_region = models.CharField(max_length=15, help_text=u"服务所属区")
-    desc = models.CharField(
-        max_length=200, null=True, blank=True, help_text=u"描述")
-    category = models.CharField(
-        max_length=15, help_text=u"服务分类：application,cache,store")
-    service_port = models.IntegerField(help_text=u"服务端口", default=0)
-    is_web_service = models.BooleanField(
-        default=False, blank=True, help_text=u"是否web服务")
-    version = models.CharField(max_length=20, help_text=u"版本")
-    update_version = models.IntegerField(default=1, help_text=u"内部发布次数")
-    image = models.CharField(max_length=100, help_text=u"镜像")
-    cmd = models.CharField(
-        max_length=2048, null=True, blank=True, help_text=u"启动参数")
-    setting = models.CharField(
-        max_length=100, null=True, blank=True, help_text=u"设置项")
-    extend_method = models.CharField(
-        max_length=15,
-        default='stateless',
-        help_text=u"伸缩方式")
-    env = models.CharField(
-        max_length=200, null=True, blank=True, help_text=u"环境变量")
-    min_node = models.IntegerField(help_text=u"启动个数", default=1)
-    min_cpu = models.IntegerField(help_text=u"cpu个数", default=500)
-    min_memory = models.IntegerField(help_text=u"内存大小单位（M）", default=256)
-    inner_port = models.IntegerField(help_text=u"内部端口", default=0)
-    volume_mount_path = models.CharField(
-        max_length=50, null=True, blank=True, help_text=u"mount目录")
-    host_path = models.CharField(
-        max_length=300, null=True, blank=True, help_text=u"mount目录")
-    deploy_version = models.CharField(
-        max_length=20, null=True, blank=True, help_text=u"部署版本")
-    code_from = models.CharField(
-        max_length=20, null=True, blank=True, help_text=u"代码来源:gitlab,github")
-    git_url = models.CharField(
-        max_length=100, null=True, blank=True, help_text=u"code代码仓库")
-    create_time = models.DateTimeField(
-        auto_now_add=True, blank=True, help_text=u"创建时间")
-    git_project_id = models.IntegerField(help_text=u"gitlab 中项目id", default=0)
-    is_code_upload = models.BooleanField(
-        default=False, blank=True, help_text=u"是否上传代码")
-    code_version = models.CharField(
-        max_length=100, null=True, blank=True, help_text=u"代码版本")
-    service_type = models.CharField(
-        max_length=50,
-        null=True,
-        blank=True,
-        help_text=u"服务类型:web,mysql,redis,mongodb,phpadmin")
-    creater = models.IntegerField(help_text=u"服务创建者", default=0)
-    language = models.CharField(
-        max_length=40, null=True, blank=True, help_text=u"代码语言")
-    protocol = models.CharField(
-        max_length=15, default='', help_text=u"服务协议：http,stream")
-    total_memory = models.IntegerField(help_text=u"内存使用M", default=0)
-    is_service = models.BooleanField(
-        default=False, blank=True, help_text=u"是否inner服务")
-    namespace = models.CharField(
-        max_length=100, default='', help_text=u"镜像发布云帮的区间")
-
-    volume_type = models.CharField(
-        max_length=15, default='shared', help_text=u"共享类型shared、exclusive")
-    port_type = models.CharField(
-        max_length=15,
-        default='multi_outer',
-        help_text=u"端口类型，one_outer;dif_protocol;multi_outer")
-    # 服务创建类型,cloud、assistant
-    service_origin = models.CharField(
-        max_length=15,
-        default='assistant',
-        help_text=u"服务创建类型cloud云市服务,assistant云帮服务")
-    expired_time = models.DateTimeField(null=True, help_text=u"过期时间")
-    tenant_service_group_id = models.IntegerField(default=0, help_text=u"应用归属的服务组id")
-
-    service_source = models.CharField(max_length=15, default="", null=True, blank=True,
-                                      help_text=u"应用来源(source_code, market, docker_run, docker_compose)")
-    create_status = models.CharField(max_length=15, null=True, blank=True, help_text=u"应用创建状态 creating|complete")
-    update_time = models.DateTimeField(auto_now_add=True, blank=True, help_text=u"更新时间")
-    check_uuid = models.CharField(
-        max_length=36, blank=True, null=True, default="", help_text=u"应用检测ID")
-    check_event_id = models.CharField(
-        max_length=32, blank=True, null=True, default="", help_text=u"应用检测事件ID")
-    docker_cmd = models.CharField(
-        max_length=1024, null=True, blank=True, help_text=u"镜像创建命令")
-
-
-class ServiceRelationRecycleBin(BaseModel):
-    class Meta:
-        db_table = 'tenant_service_relation_recycle_bin'
-        unique_together = ('service_id', 'dep_service_id')
-
-    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
-    service_id = models.CharField(max_length=32, help_text=u"服务id")
-    dep_service_id = models.CharField(max_length=32, help_text=u"依赖服务id")
-    dep_service_type = models.CharField(
-        max_length=50,
-        null=True,
-        blank=True,
-        help_text=u"服务类型:web,mysql,redis,mongodb,phpadmin")
-    dep_order = models.IntegerField(help_text=u"依赖顺序")
 
 
 class EnterpriseUserPerm(BaseModel):
@@ -408,20 +250,6 @@ class PermGroup(BaseModel):
         db_table = 'tenant_permission_group'
 
     group_name = models.CharField(max_length=64, help_text=u'组名')
-
-    def __unicode__(self):
-        return self.to_dict()
-
-
-class ServiceRelPerms(BaseModel):
-    """一个用户在一个应用下的权限"""
-
-    class Meta:
-        db_table = 'service_user_perms'
-
-    user_id = models.IntegerField(help_text=u"用户id")
-    service_id = models.IntegerField(help_text=u"服务id")
-    perm_id = models.IntegerField(help_text=u'权限id')
 
     def __unicode__(self):
         return self.to_dict()
@@ -561,3 +389,263 @@ class DeployRelation(BaseModel):
         max_length=32, unique=True, help_text=u"服务id")
     key_type = models.CharField(max_length=10, help_text=u"密钥类型")
     secret_key = models.CharField(max_length=200, help_text=u"密钥")
+
+
+class TenantEnterpriseToken(BaseModel):
+    class Meta:
+        db_table = 'tenant_enterprise_token'
+        unique_together = ('enterprise_id', 'access_target')
+
+    enterprise_id = models.IntegerField(default=0, help_text=u"企业id")
+    access_target = models.CharField(max_length=32, blank=True, null=True, default='', help_text=u"要访问的目标服务名称")
+    access_url = models.CharField(max_length=255,  help_text=u"需要访问的api地址")
+    access_id = models.CharField(max_length=32, help_text=u"target分配给客户端的ID")
+    access_token = models.CharField(max_length=256, blank=True, null=True, default='', help_text=u"客户端token")
+    crt = models.TextField(default='', blank=True, null=True, help_text=u"客户端证书")
+    key = models.TextField(default='', blank=True, null=True, help_text=u"客户端证书key")
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, help_text=u"创建时间")
+    update_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, help_text=u"更新时间")
+
+    def __unicode__(self):
+        return self.to_dict()
+
+
+class TenantEnterprise(BaseModel):
+    class Meta:
+        db_table = 'tenant_enterprise'
+
+    enterprise_id = models.CharField(max_length=32, unique=True, help_text=u"企业id")
+    enterprise_name = models.CharField(max_length=64, help_text=u"企业名称")
+    enterprise_alias = models.CharField(max_length=64, blank=True, null=True, default='', help_text=u"企业别名")
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, null=True, help_text=u"创建时间")
+    enterprise_token = models.CharField(max_length=256, blank=True, null=True, default='', help_text=u"企业身份token")
+    is_active = models.IntegerField(default=0, help_text=u"是否在云市上激活, 0:未激活, 1:已激活")
+
+    def __unicode__(self):
+        return self.to_dict()
+
+
+class Tenants(BaseModel):
+    """
+    租户表
+    """
+    class Meta:
+        db_table = 'tenant_info'
+
+    tenant_id = models.CharField(
+        max_length=33, unique=True, default=make_tenant_id, help_text=u"租户id")
+    tenant_name = models.CharField(
+        max_length=40, unique=True, help_text=u"租户名称")
+    region = models.CharField(
+        max_length=30, default='', help_text=u"区域中心")
+    is_active = models.BooleanField(default=True, help_text=u"激活状态")
+    pay_type = models.CharField(
+        max_length=5, choices=tenant_type, help_text=u"付费状态")
+    balance = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00, help_text=u"账户余额")
+    create_time = models.DateTimeField(
+        auto_now_add=True, blank=True, help_text=u"创建时间")
+    creater = models.IntegerField(help_text=u"租户创建者", default=0)
+    limit_memory = models.IntegerField(help_text=u"内存大小单位（M）", default=1024)
+    update_time = models.DateTimeField(auto_now=True, help_text=u"更新时间")
+    pay_level = models.CharField(
+        max_length=30, default='free', help_text=u"付费级别:free,personal,company")
+    expired_time = models.DateTimeField(null=True, help_text=u"过期时间")
+    tenant_alias = models.CharField(max_length=64, null=True, blank=True, default='', help_text=u"团队别名")
+    enterprise_id = models.CharField(max_length=32, null=True, blank=True, default='', help_text=u"企业id")
+
+    def __unicode__(self):
+        return self.tenant_name
+
+
+class Users(models.Model):
+    USERNAME_FIELD = 'nick_name'
+
+    class Meta:
+        db_table = 'user_info'
+
+    user_id = models.AutoField(primary_key=True, max_length=10)
+    email = models.EmailField(max_length=35, help_text=u"邮件地址")
+    nick_name = models.CharField(
+        max_length=24, unique=True, null=True, blank=True, help_text=u"用户昵称")
+    password = models.CharField(max_length=16, help_text=u"密码")
+    phone = models.CharField(
+        max_length=11, null=True, blank=True, help_text=u"手机号码")
+    is_active = models.BooleanField(default=False, help_text=u"激活状态")
+    origion = models.CharField(
+        max_length=12, choices=user_origion, help_text=u"用户来源")
+    create_time = models.DateTimeField(
+        auto_now_add=True, blank=True, help_text=u"创建时间")
+    git_user_id = models.IntegerField(help_text=u"gitlab 用户id", default=0)
+    github_token = models.CharField(max_length=60, help_text=u"github token")
+    client_ip = models.CharField(max_length=20, help_text=u"注册ip")
+    rf = models.CharField(max_length=60, help_text=u"register from")
+    # 0:普通注册,未绑定微信
+    # 1:普通注册,绑定微信
+    # 2:微信注册,绑定微信,未补充信息
+    # 3:微信注册,绑定微信,已补充信息
+    # 4:微信注册,解除微信绑定,已补充信息
+    status = models.IntegerField(default=0, help_text=u'用户类型 0:普通注册,未绑定微信')
+    union_id = models.CharField(max_length=100, help_text=u'绑定微信的union_id')
+    sso_user_id = models.CharField(max_length=32, null=True, blank=True, default='', help_text=u"统一认证中心的user_id")
+    sso_user_token = models.CharField(max_length=256, null=True, blank=True, default='', help_text=u"统一认证中心的user_id")
+    enterprise_id = models.CharField(max_length=32, null=True, blank=True, default='',
+                                     help_text=u"统一认证中心的enterprise_id")
+
+    def set_password(self, raw_password):
+        self.password = encrypt_passwd(self.email + raw_password)
+
+    def check_password(self, raw_password):
+        return bool(encrypt_passwd(self.email + raw_password) == self.password)
+
+    def is_anonymous(self):
+        return False
+
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_sys_admin(self):
+        """
+        是否是系统管理员
+        :return: True/False
+        """
+        # admins = ('liufan@gmail.com', 'messi@goodrain.com', 'elviszhang@163.com', 'rhino@goodrain.com',
+        #           'ethan@goodrain.com', 'fanfan@goodrain.com', 'wangjiajun33wjj@126.com', 'linmu0001@126.com')
+        # return bool(self.email in admins)
+        if self.user_id:
+            try:
+                SuperAdminUser.objects.get(user_id=self.user_id)
+                return True
+            except SuperAdminUser.DoesNotExist:
+                pass
+        return False
+
+    def get_session_auth_hash(self):
+        """
+        Returns an HMAC of the password field.
+        """
+        key_salt = "goodrain.com.models.get_session_auth_hash"
+        return salted_hmac(key_salt, self.password).hexdigest()
+
+    @property
+    def safe_email(self):
+        return re.sub(r'(?<=\w{2}).*(?=\w@.*)', 'xxxx', self.email)
+
+    def __unicode__(self):
+        return self.nick_name or self.email
+
+    def to_dict(self):
+        opts = self._meta
+        data = {}
+        for f in opts.concrete_fields:
+            value = f.value_from_object(self)
+            if isinstance(value, datetime):
+                value = value.strftime('%Y-%m-%d %H:%M:%S')
+            data[f.name] = value
+        return data
+
+    def get_username(self):
+        return self.nick_name
+
+
+class SuperAdminUser(models.Model):
+    """超级管理员"""
+
+    class Meta:
+        db_table = "user_administrator"
+
+    user_id = models.IntegerField(unique=True, help_text=u"用户ID")
+    email = models.EmailField(max_length=35, null=True, blank=True, help_text=u"邮件地址")
+
+
+class PermRelTenant(BaseModel):
+    """
+    用户和团队的关系表
+    identity ：租户权限
+    """
+    class Meta:
+        db_table = 'tenant_perms'
+
+    user_id = models.IntegerField(help_text=u"关联用户")
+    tenant_id = models.IntegerField(help_text=u"团队id")
+    identity = models.CharField(
+        max_length=15, choices=tenant_identity, help_text=u"租户身份", null=True, blank=True)
+    enterprise_id = models.IntegerField(help_text=u"关联企业")
+    role_id = models.IntegerField(help_text=u'角色', null=True, blank=True)
+
+
+class PermRelService(BaseModel):
+    """
+    用户和服务关系表/用户在一个服务中的角色
+    """
+    class Meta:
+        db_table = 'service_perms'
+
+    user_id = models.IntegerField(help_text=u"用户id")
+    service_id = models.IntegerField(help_text=u"服务id")
+    identity = models.CharField(
+        max_length=15, choices=service_identity, help_text=u"服务身份", null=True, blank=True)
+    role_id = models.IntegerField(help_text=u'角色', null=True, blank=True)
+
+
+class TenantRegionInfo(BaseModel):
+    class Meta:
+        db_table = 'tenant_region'
+        unique_together = (('tenant_id', 'region_name'),)
+
+    tenant_id = models.CharField(
+        max_length=33, db_index=True, help_text=u"租户id")
+    region_name = models.CharField(max_length=20, help_text=u"区域中心名称")
+    is_active = models.BooleanField(default=True, help_text=u"是否已激活")
+    is_init = models.BooleanField(default=False, help_text=u'是否创建租户网络')
+    service_status = models.IntegerField(
+        help_text=u"服务状态0:暂停，1:运行，2:关闭", default=1)
+    create_time = models.DateTimeField(
+        auto_now_add=True, blank=True, help_text=u"创建时间")
+    update_time = models.DateTimeField(auto_now=True, help_text=u"更新时间")
+    region_tenant_name = models.CharField(max_length=32, null=True, blank=True, default='', help_text=u"数据中心租户名")
+    region_tenant_id = models.CharField(max_length=32, null=True, blank=True, default='', help_text=u"数据中心租户id")
+    region_scope = models.CharField(max_length=32, null=True, blank=True, default='',
+                                    help_text=u"数据中心类型 private/public")
+    enterprise_id = models.CharField(max_length=32, null=True, blank=True, default='', help_text=u"企业id")
+
+
+class TenantRegionPayModel(BaseModel):
+    class Meta:
+        db_table = 'tenant_region_pay_model'
+
+    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
+    region_name = models.CharField(max_length=20, help_text=u"区域中心名称")
+    pay_model = models.CharField(
+        max_length=10, default='hour', help_text=u"付费模式:hour,month,year")
+    buy_period = models.IntegerField(help_text=u"购买周期", default=0)
+    buy_memory = models.IntegerField(help_text=u"购买内存", default=0)
+    buy_disk = models.IntegerField(help_text=u"购买磁盘", default=0)
+    buy_net = models.IntegerField(help_text=u"购买流量", default=0)
+    buy_start_time = models.DateTimeField(help_text=u"购买开始时间")
+    buy_end_time = models.DateTimeField(help_text=u"购买结束时间")
+    buy_money = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00, help_text=u"购买金额")
+    create_time = models.DateTimeField(
+        auto_now_add=True, blank=True, help_text=u"创建时间")
+
+
+class TenantRegionResource(BaseModel):
+    class Meta:
+        db_table = 'tenant_region_resource'
+        unique_together = (('tenant_id', 'region_name'),)
+
+    enterprise_id = models.CharField(max_length=32, help_text=u"企业id")
+    tenant_id = models.CharField(max_length=33, help_text=u"租户id")
+    region_name = models.CharField(max_length=20, help_text=u"区域中心名称")
+    memory_limit = models.IntegerField(help_text=u"内存使用上限(M)", default=0)
+    memory_expire_date = models.DateTimeField(null=True, blank=True, help_text=u"内存有效期时间")
+    disk_limit = models.IntegerField(help_text=u"磁盘使用上限(M)", default=0)
+    disk_expire_date = models.DateTimeField(null=True, blank=True, help_text=u"磁盘有效期时间")
+    net_limit = models.IntegerField(help_text=u"磁盘使用上限(M)", default=0)
+    net_stock = models.IntegerField(help_text=u"磁盘使用余量(M)", default=0)
+    create_time = models.DateTimeField(auto_now_add=True, blank=True, help_text=u"创建时间")
+    update_time = models.DateTimeField(auto_now=True, help_text=u"更新时间")
+
+

@@ -6,11 +6,10 @@ import re
 
 from console.constants import AppConstants
 from console.repositories.app_config import volume_repo, mnt_repo
-
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 import logging
 from console.utils.urlutil import is_path_legal
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 
 region_api = RegionInvokeApi()
 logger = logging.getLogger("default")
@@ -75,7 +74,7 @@ class AppVolumeService(object):
     def add_service_volume(self, tenant, service, volume_path, volume_type, volume_name):
         code, msg, volume_name = self.check_volume_name(service, volume_name)
         dep_mnt_names = mnt_repo.get_service_mnts(tenant.tenant_id, service.service_id).values_list('mnt_dir',
-                                                                                                              flat=True)
+                                                                                                    flat=True)
         local_path = []
         if dep_mnt_names:
             local_path.append(dep_mnt_names.values("mnt_dir")[0].get("mnt_dir"))
@@ -109,7 +108,7 @@ class AppVolumeService(object):
         if not volume:
             return 404, u"需要删除的路径不存在", None
         # if volume.volume_type == volume.SHARE:
-            # 判断当前共享目录是否被使用
+        # 判断当前共享目录是否被使用
         mnt = mnt_repo.get_mnt_by_dep_id_and_mntname(service.service_id, volume.volume_name)
         if mnt:
             return 403, u"当前路径被共享,无法删除", None

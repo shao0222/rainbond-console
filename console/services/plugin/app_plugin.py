@@ -18,9 +18,9 @@ from console.repositories.plugin import app_plugin_relation_repo, plugin_repo, c
 from console.repositories.plugin import service_plugin_config_repo
 from console.services.app_config.app_relation_service import AppServiceRelationService
 from goodrain_web.tools import JuncheePaginator
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models.plugin import ServicePluginConfigVar, PluginConfigGroup, PluginConfigItems
-from www.utils.crypt import make_uuid
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.plugin import ServicePluginConfigVar, PluginConfigGroup, PluginConfigItems
+from console.utils.crypt import make_uuid
 from .plugin_config_service import PluginConfigService
 from .plugin_version import PluginBuildVersionService
 
@@ -193,7 +193,7 @@ class AppPluginService(object):
         ServicePluginConfigVar.objects.bulk_create(service_plugin_var)
         return 200, "success"
 
-    def __check_ports_for_config_items(self,ports, items):
+    def __check_ports_for_config_items(self, ports, items):
         for item in items:
             if item.protocol == "":
                 return True
@@ -203,7 +203,6 @@ class AppPluginService(object):
                     if port.protocol in protocols:
                         return True
         return False
-
 
     def get_region_config_from_db(self, service, plugin_id, build_version):
         attrs = service_plugin_config_repo.get_service_plugin_config_var(service.service_id, plugin_id, build_version)
@@ -637,4 +636,5 @@ class PluginService(object):
         if plugins:
             return plugins
         else:
-            return plugin_repo.get_tenant_plugins(tenant.tenant_id, region).filter(category="analyst-plugin:perf",image="goodrain.me/tcm")
+            return plugin_repo.get_tenant_plugins(tenant.tenant_id, region).filter(category="analyst-plugin:perf",
+                                                                                   image="goodrain.me/tcm")

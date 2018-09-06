@@ -1,9 +1,5 @@
 # -*- coding: utf8 -*-
-import re
 from django.db import models
-from django.utils.crypto import salted_hmac
-from www.utils.crypt import encrypt_passwd, make_tenant_id
-from django.db.models.fields import DateTimeField
 from datetime import datetime
 
 

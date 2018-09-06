@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from backends.models import RegionConfig
-from backends.services.exceptions import NoEnableRegionError
 from console.repositories.team_repo import team_repo
-from www.models import TenantRegionInfo
+from console.models.main import TenantRegionInfo
 
 
 class RegionRepo(object):

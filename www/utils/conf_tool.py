@@ -3,7 +3,6 @@
 from goodrain_web.custom_config import custom_config as custom_settings
 from django.conf import settings
 import logging
-import  os
 from console.repositories.region_repo import region_repo
 
 logger = logging.getLogger('default')

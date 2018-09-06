@@ -4,7 +4,6 @@ import datetime
 from console.repositories.apply_repo import apply_repo
 from console.repositories.team_repo import team_repo
 from console.repositories.user_repo import user_repo
-from www.utils.return_message import general_message
 
 
 class ApplyService(object):
@@ -26,8 +25,6 @@ class ApplyService(object):
             return info
         else:
             return None
-
-
 
 
 apply_service = ApplyService()

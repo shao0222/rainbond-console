@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from console.models.main import RainbondCenterApp, ServiceShareRecord, RainbondCenterPlugin
-from www.models import ServiceGroupRelation, TenantServiceInfo, TenantServicesPort, TenantServiceRelation, \
-    TenantServiceEnvVar, TenantServiceVolume, TenantServicePluginRelation, TenantServicePluginAttr, ServiceInfo, \
-    TenantServiceExtendMethod, ServiceProbe,ServicePluginConfigVar
+from console.models.main import RainbondCenterApp, RainbondCenterPlugin
+from console.models.services import ServiceShareRecord
+from console.models.services import ServiceGroupRelation, TenantServiceInfo, TenantServicesPort, TenantServiceRelation, \
+    TenantServiceEnvVar, TenantServiceVolume, ServiceInfo, TenantServiceExtendMethod, ServiceProbe
+
+from console.models.plugin import TenantServicePluginRelation, TenantServicePluginAttr, ServicePluginConfigVar
 
 
 class ShareRepo(object):

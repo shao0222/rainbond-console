@@ -2,8 +2,11 @@
 """
   Created on 18/1/16.
 """
-from www.models import TenantServiceInfo, TenantServiceInfoDelete
-from console.models.main import ServiceSourceInfo, ServiceRecycleBin, ServiceRelationRecycleBin
+from console.models.main import TenantServiceInfo
+from console.models.main import TenantServiceInfoDelete
+from console.models.main import ServiceSourceInfo
+from console.models.main import ServiceRecycleBin
+from console.models.main import ServiceRelationRecycleBin
 
 
 class TenantServiceInfoRepository(object):

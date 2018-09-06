@@ -6,15 +6,13 @@ from django.conf import settings
 
 from console.repositories.event_repo import event_repo
 import datetime
-from console.utils.timeutil import time_to_str, str_to_time, current_time, current_time_str
+from console.utils.timeutil import time_to_str, str_to_time
 from goodrain_web.tools import JuncheePaginator
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 from console.constants import LogConstants, ServiceEventConstants
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 import logging
 from console.services.plugin.app_plugin import AppPluginService
-from console.repositories.plugin import plugin_repo
-from backends.models.main import RegionConfig
 from console.repositories.region_repo import region_repo
 
 app_plugin_service = AppPluginService()

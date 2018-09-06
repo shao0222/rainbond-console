@@ -10,7 +10,7 @@ from console.services.app_config.volume_service import AppVolumeService
 
 import logging
 
-from www.apiclient.regionapi import RegionInvokeApi
+from console.apiclient.regionapi import RegionInvokeApi
 
 logger = logging.getLogger("default")
 volume_service = AppVolumeService()
@@ -50,7 +50,6 @@ class AppMntService(object):
                         "dep_app_alias": dep_service.service_alias
                     })
         return mounted_dependencies, total
-
 
     def get_service_unmnt_details(self, tenant, service, service_ids, page, page_size):
 

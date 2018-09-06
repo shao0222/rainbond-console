@@ -5,7 +5,9 @@
 
 import logging
 
-from www.models import ServiceGroup, ServiceGroupRelation, TenantServiceGroup
+from console.models.services import ServiceGroup
+from console.models.services import ServiceGroupRelation
+from console.models.services import TenantServiceGroup
 
 logger = logging.getLogger("default")
 
@@ -15,7 +17,8 @@ class GroupRepository(object):
         return ServiceGroup.objects.filter(tenant_id=tenant.tenant_id, region_name=region_name)
 
     def add_group(self, tenant_id, region_name, group_name, is_default=False):
-        group = ServiceGroup.objects.create(tenant_id=tenant_id, region_name=region_name, group_name=group_name, is_default=is_default)
+        group = ServiceGroup.objects.create(tenant_id=tenant_id, region_name=region_name, group_name=group_name,
+                                            is_default=is_default)
         return group
 
     def get_group_by_unique_key(self, tenant_id, region_name, group_name):
@@ -41,11 +44,12 @@ class GroupRepository(object):
         group_count = ServiceGroup.objects.filter(tenant_id=team_id, ID=group_id).count()
         return group_count
 
-    def get_tenant_region_groups(self,team_id,region):
-        return ServiceGroup.objects.filter(tenant_id=team_id,region_name=region)
+    def get_tenant_region_groups(self, team_id, region):
+        return ServiceGroup.objects.filter(tenant_id=team_id, region_name=region)
 
     def get_group_by_id(self, group_id):
         return ServiceGroup.objects.filter(pk=group_id).first()
+
 
 class GroupServiceRelationRepository(object):
     def delete_relation_by_group_id(self, group_id):
@@ -89,11 +93,12 @@ class GroupServiceRelationRepository(object):
     def create_service_group_relation(self, **params):
         return ServiceGroupRelation.objects.create(**params)
 
-    def get_service_group_relation_by_groups(self,group_ids):
+    def get_service_group_relation_by_groups(self, group_ids):
         return ServiceGroupRelation.objects.filter(group_id__in=group_ids)
 
     def get_services_by_group(self, group_id):
         return ServiceGroupRelation.objects.filter(group_id=group_id)
+
 
 class TenantServiceGroupRepository(object):
     def delete_tenant_service_group_by_pk(self, pk):
