@@ -10,10 +10,10 @@ from console.repositories.share_repo import share_repo
 from console.services.market_plugin_service import market_plugin_service
 from console.services.share_services import share_service
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
-from www.services import plugin_svc
-from www.utils.crypt import make_uuid
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.services import plugin_svc
+from console.utils.crypt import make_uuid
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger('default')
 

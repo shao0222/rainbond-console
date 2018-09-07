@@ -11,9 +11,9 @@ from rest_framework.response import Response
 from console.services.plugin import app_plugin_service
 from console.services.plugin import plugin_version_service
 from console.views.app_config.base import AppBaseView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.common_services import common_services
 
 region_api = RegionInvokeApi()

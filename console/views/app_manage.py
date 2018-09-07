@@ -12,8 +12,8 @@ from console.services.app_actions import app_manage_service
 from console.services.app_config.env_service import AppEnvVarService
 from console.views.app_config.base import AppBaseView
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.app_actions import event_service
 from console.services.app import app_service
 from console.services.team_services import team_services

@@ -18,7 +18,7 @@ from console.market.market_interface import MarketOpenAPI
 from console.apiclient.regionapi import RegionInvokeApi
 from console.models.plugin import TenantPlugin, PluginConfigGroup, PluginConfigItems
 from console.utils.crypt import make_uuid
-from www.services import plugin_svc
+from console.services import plugin_svc
 
 market_api = MarketOpenAPI()
 region_api = RegionInvokeApi()

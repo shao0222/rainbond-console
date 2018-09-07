@@ -5,8 +5,8 @@
 """
 import logging
 
-from www.models.main import ServiceGroup
-from www.models.main import ServiceGroupRelation
+from console.models.services import ServiceGroup
+from console.models.services import ServiceGroupRelation
 from console.repositories.app import service_repo
 logger = logging.getLogger("default")
 

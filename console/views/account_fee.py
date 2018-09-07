@@ -6,8 +6,8 @@ from rest_framework.response import Response
 from console.services.team_services import team_services
 from console.utils.timeutil import current_time_to_str
 from console.views.base import JWTAuthApiView
-from www.apiclient.marketclient import MarketOpenAPI
-from www.utils.return_message import general_message, error_message
+from console.market.market_interface import MarketOpenAPI
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger("default")
 market_api = MarketOpenAPI()

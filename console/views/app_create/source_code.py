@@ -7,11 +7,11 @@ from rest_framework.response import Response
 
 from console.exception.main import ResourceNotEnoughException
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
+from console.decorator import perm_required
 import logging
-from www.utils.return_message import general_message, error_message
+from console.utils.return_message import general_message, error_message
 from console.services.app import app_service
-from console.services.app_config import port_service, compile_env_service
+from console.services.app_config import compile_env_service
 from console.services.group_service import group_service
 from console.views.app_config.base import AppBaseView
 import json

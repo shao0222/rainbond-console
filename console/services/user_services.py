@@ -11,13 +11,13 @@ from backends.services.tenantservice import tenant_service as tenantService, Ema
     PasswordTooShortError
 from console.repositories.team_repo import team_repo
 from console.repositories.user_repo import user_repo
-from www.gitlab_http import GitlabApi
-from www.models import Tenants, Users, PermRelTenant
-from www.tenantservice.baseservice import CodeRepositoriesService
+from console.gitlab_http import GitlabApi
+from console.models.main import Tenants, Users, PermRelTenant
+from console.tenantservice.baseservice import CodeRepositoriesService
 from console.repositories.enterprise_repo import enterprise_user_perm_repo
 from console.services.app_actions import app_manage_service
 from console.services.app_actions import event_service
-from www.utils.return_message import general_message
+from console.utils.return_message import general_message
 
 logger = logging.getLogger("default")
 codeRepositoriesService = CodeRepositoriesService()

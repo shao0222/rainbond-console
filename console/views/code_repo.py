@@ -12,9 +12,9 @@ from console.services.git_service import GitCodeService
 from console.services.user_services import user_services
 from console.views.app_config.base import AppBaseView
 from console.views.base import RegionTenantHeaderView, JWTAuthApiView
-from www.decorator import perm_required
-from www.utils.return_message import error_message, general_message
-from www.utils.url import get_redirect_url
+from console.decorator import perm_required
+from console.utils.return_message import error_message, general_message
+from console.utils.url import get_redirect_url
 
 logger = logging.getLogger("default")
 git_service = GitCodeService()

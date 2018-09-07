@@ -8,7 +8,7 @@ from django.conf import settings
 from django.core.mail.backends.smtp import EmailBackend
 
 from cadmin.models.main import ConsoleSysConfig
-from www.utils.json_tool import json_load
+from console.utils.json_tool import json_load
 
 email_config = ConsoleSysConfig.objects.filter(key='EMAIL')
 mail_config = json_load(email_config[0].value)

@@ -13,8 +13,8 @@ from console.services.app_check_service import app_check_service
 from console.services.compose_service import compose_service
 from console.services.group_service import group_service
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
-from www.utils.return_message import error_message, general_message
+from console.decorator import perm_required
+from console.utils.return_message import error_message, general_message
 from console.repositories.group import group_repo
 from console.repositories.compose_repo import compose_repo
 

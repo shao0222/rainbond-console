@@ -1,4 +1,4 @@
-#import re
+# import re
 from django.utils.six.moves.urllib.parse import urlparse
 
 REDIRECT_SSL_HOST = ('user.goodrain.com', 'zyq-debug.goodrain.com', 'dev.goodrain.com')

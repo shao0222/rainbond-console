@@ -8,7 +8,7 @@ from rest_framework.response import Response
 
 from console.services.git_service import GitCodeService
 from console.views.base import RegionTenantHeaderView
-from www.utils.return_message import error_message, general_message
+from console.utils.return_message import error_message, general_message
 from console.services.file_upload_service import upload_service
 
 logger = logging.getLogger("default")

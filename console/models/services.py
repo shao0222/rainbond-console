@@ -7,6 +7,9 @@ from django.db.models.fields.files import FileField
 from django.db.models.fields import DateTimeField
 from .main import Users
 from .fields import GrOptionsCharField
+from django.conf import settings
+from www.utils.crypt import make_uuid
+
 
 logger = logging.getLogger("default")
 
@@ -22,6 +25,14 @@ group_publish_type = (
     ('services_group', u'应用组'), ("cloud_frame", u'云框架'),
 )
 pay_status = ((u"已发布", 'payed'), (u"测试中", "unpayed"),)
+app_status = (
+    ('show', u'显示'), ("hidden", u'隐藏'),
+)
+
+
+def logo_path(instance, filename):
+    suffix = filename.split('.')[-1]
+    return '{0}/logo/{1}.{2}'.format(settings.MEDIA_ROOT, make_uuid(), suffix)
 
 
 class BaseModel(models.Model):
@@ -1033,3 +1044,123 @@ class ServiceConsume(BaseModel):
         max_digits=10, decimal_places=2, default=0.00, help_text=u"内存按需金额")
     real_disk_money = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.00, help_text=u"磁盘按需金额")
+
+
+# 服务--app关系表格
+class AppService(BaseModel):
+    """ 服务发布表格 """
+
+    class Meta:
+        db_table = 'app_service'
+        unique_together = ('service_key', 'app_version')
+
+    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
+    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    service_key = models.CharField(max_length=32, help_text=u"服务key")
+    app_version = models.CharField(max_length=20, null=False, help_text=u"当前最新版本")
+    app_alias = models.CharField(max_length=100, help_text=u"服务发布名称")
+    logo = models.FileField(upload_to=logo_path, null=True, blank=True, help_text=u"logo")
+    info = models.CharField(max_length=100, null=True, blank=True, help_text=u"简介")
+    desc = models.CharField(max_length=400, null=True, blank=True, help_text=u"描述")
+    status = models.CharField(max_length=15, choices=app_status, help_text=u"服务状态：发布后显示还是隐藏")
+    category = models.CharField(max_length=15, help_text=u"服务分类：application,cache,store,app_publish")
+    is_service = models.BooleanField(default=False, blank=True, help_text=u"是否inner服务")
+    is_web_service = models.BooleanField(default=False, blank=True, help_text=u"是否web服务")
+    image = models.CharField(max_length=100, help_text=u"镜像")
+    namespace = models.CharField(max_length=100, default='', help_text=u"镜像发布云帮的区间")
+    slug = models.CharField(max_length=200, help_text=u"slug包路径", default="")
+    extend_method = models.CharField(max_length=15, choices=extend_method, default='stateless', help_text=u"伸缩方式")
+    cmd = models.CharField(max_length=100, null=True, blank=True, help_text=u"启动参数")
+    env = models.CharField(max_length=200, null=True, blank=True, help_text=u"环境变量")
+    min_node = models.IntegerField(help_text=u"启动个数", default=1)
+    min_cpu = models.IntegerField(help_text=u"cpu个数", default=500)
+    min_memory = models.IntegerField(help_text=u"内存大小单位（M）", default=256)
+    inner_port = models.IntegerField(help_text=u"内部端口", default=0)
+    volume_mount_path = models.CharField(max_length=50, null=True, blank=True, help_text=u"mount目录")
+    service_type = models.CharField(max_length=50, null=True, blank=True,
+                                    help_text=u"服务类型:web,mysql,redis,mongodb,phpadmin")
+    is_init_accout = models.BooleanField(default=False, blank=True, help_text=u"是否初始化账户")
+    is_base = models.BooleanField(default=False, blank=True, help_text=u"是否基础服务")
+    is_outer = models.BooleanField(default=False, blank=True, help_text=u"是否发布到公有市场")
+    is_ok = models.BooleanField(help_text=u'发布是否成功', default=False)
+    dest_yb = models.BooleanField(help_text=u'云帮发布是否成功', default=False)
+    dest_ys = models.BooleanField(help_text=u'云市发布是否成功', default=False)
+    creater = models.IntegerField(null=True, help_text=u"创建人")
+    publisher = models.EmailField(max_length=35, help_text=u"邮件地址")
+    show_category = models.CharField(max_length=15, help_text=u"服务分类")
+
+    show_app = models.BooleanField(default=False, blank=True, help_text=u"发布到公有市场后是否在云市展示")
+    show_assistant = models.BooleanField(default=False, blank=True, help_text=u"发布到公有市场后是否在云帮展示")
+    update_version = models.IntegerField(default=1, help_text=u"内部发布次数")
+
+    def is_slug(self):
+        # return bool(self.image.startswith('goodrain.me/runner'))
+        return bool(self.image.endswith('/runner')) or bool('/runner:' in self.image)
+
+    def is_image(self):
+        return not self.is_slug()
+
+    def __unicode__(self):
+        return u"{0}({1})".format(self.service_id, self.service_key)
+
+
+class AppServiceShareInfo(BaseModel):
+    """普通发布存储环境是否可修改信息"""
+
+    class Meta:
+        db_table = 'app_service_share'
+
+    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
+    service_id = models.CharField(max_length=32, help_text=u"服务id")
+
+    tenant_env_id = models.IntegerField(help_text=u"服务的环境id")
+    is_change = models.BooleanField(default=False, help_text=u"是否可改变")
+
+
+class ServiceFeeBill(BaseModel):
+    class Meta:
+        db_table = 'service_fee_bill'
+
+    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
+    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    prepaid_money = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.00, help_text=u"付费金额")
+    pay_status = models.CharField(
+        max_length=15, choices=pay_status, help_text=u"付费状态")
+    cost_type = models.CharField(max_length=15, help_text=u"消费类型")
+    node_memory = models.IntegerField(help_text=u"内存大小单位（M）", default=128)
+    node_num = models.IntegerField(help_text=u"节点个数", default=1)
+    disk = models.IntegerField(help_text=u'磁盘大小')
+    buy_period = models.IntegerField(help_text=u"预付费时长(单位:小时)", default=0)
+    create_time = models.DateTimeField(auto_now_add=True, help_text=u"创建时间")
+    pay_time = models.DateTimeField(auto_now_add=True, help_text=u"支付时间")
+
+
+class TenantServiceStatics(BaseModel):
+    class Meta:
+        db_table = 'tenant_service_statics'
+        unique_together = ('service_id', 'time_stamp')
+        get_latest_by = 'ID'
+
+    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
+    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    pod_id = models.CharField(max_length=32, help_text=u"服务id")
+    node_num = models.IntegerField(help_text=u"节点个数", default=0)
+    node_memory = models.IntegerField(help_text=u"节点内存k", default=0)
+    container_cpu = models.IntegerField(help_text=u"cpu使用", default=0)
+    container_memory = models.IntegerField(help_text=u"内存使用K", default=0)
+    container_memory_working = models.IntegerField(
+        help_text=u"正在使用内存K", default=0)
+    pod_cpu = models.IntegerField(help_text=u"cpu使用", default=0)
+    pod_memory = models.IntegerField(help_text=u"内存使用K", default=0)
+    pod_memory_working = models.IntegerField(help_text=u"正在使用内存K", default=0)
+    container_disk = models.IntegerField(help_text=u"磁盘使用K", default=0)
+    storage_disk = models.IntegerField(help_text=u"磁盘使用K", default=0)
+    net_in = models.IntegerField(help_text=u"网络使用K", default=0)
+    net_out = models.IntegerField(help_text=u"网络使用K", default=0)
+    flow = models.IntegerField(help_text=u"网络下载量", default=0)
+    time_stamp = models.IntegerField(help_text=u"时间戳", default=0)
+    status = models.IntegerField(default=0, help_text=u"0:无效；1:有效；2:操作中")
+    region = models.CharField(max_length=15, help_text=u"服务所属区")
+    time = models.DateTimeField(
+        auto_now_add=True, blank=True, help_text=u"创建时间")

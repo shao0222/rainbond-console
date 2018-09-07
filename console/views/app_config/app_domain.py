@@ -11,8 +11,8 @@ from console.services.app_config import domain_service
 from console.views.app_config.base import AppBaseView
 from console.views.base import RegionTenantHeaderView
 from console.constants import DomainType
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.region_services import region_services
 
 logger = logging.getLogger("default")

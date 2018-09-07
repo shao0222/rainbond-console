@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from console.repositories.deploy_repo import deploy_repo
 from console.services.app import app_service
 from console.views.app_config.base import AppBaseView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.app_config import label_service, probe_service, port_service, volume_service, env_var_service, \
     dependency_service
 from console.services.app_actions import app_manage_service, event_service

@@ -10,10 +10,9 @@ from rest_framework.response import Response
 from console.constants import PluginCategoryConstants
 from console.services.plugin import plugin_service
 from console.services.plugin import plugin_version_service
-from console.services.region_services import region_services
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger("default")
 

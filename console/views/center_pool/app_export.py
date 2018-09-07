@@ -14,8 +14,8 @@ from console.exception.main import ResourceNotEnoughException
 from console.services.app_import_and_export_service import export_service
 from console.services.market_app_service import market_app_service
 from console.views.base import RegionTenantHeaderView, AlowAnyApiView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger('default')
 

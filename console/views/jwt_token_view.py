@@ -8,8 +8,8 @@ from rest_framework_jwt.settings import api_settings
 from rest_framework_jwt.views import JSONWebTokenAPIView, jwt_response_payload_handler
 
 from console.serializer import CustomJWTSerializer
-from www.services import user_svc
-from www.utils.return_message import general_message, error_message
+from console.services import user_svc
+from console.utils.return_message import general_message, error_message
 
 
 class JWTTokenView(JSONWebTokenAPIView):

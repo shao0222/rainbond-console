@@ -10,8 +10,8 @@ from rest_framework.response import Response
 
 from console.services.file_upload_service import upload_service
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.app_import_and_export_service import import_service
 
 logger = logging.getLogger('default')

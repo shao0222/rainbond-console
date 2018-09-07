@@ -10,8 +10,8 @@ from rest_framework.response import Response
 from console.exception.main import ResourceNotEnoughException
 from console.services.app import app_service
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
-from www.utils.return_message import error_message, general_message
+from console.decorator import perm_required
+from console.utils.return_message import error_message, general_message
 from console.services.group_service import group_service
 
 logger = logging.getLogger("default")

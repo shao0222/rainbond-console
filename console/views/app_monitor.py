@@ -2,17 +2,16 @@
 """
   Created on 18/1/29.
 """
+import logging
+
 from console.views.app_config.base import AppBaseView
 from console.views.base import RegionTenantHeaderView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.return_message import general_message
-import logging
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.return_message import general_message
 from rest_framework.response import Response
 from console.services.group_service import group_service
 from urllib import urlencode
-import json
-from console.services.app_config import port_service
 
 region_api = RegionInvokeApi()
 logger = logging.getLogger("default")

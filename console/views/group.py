@@ -7,8 +7,8 @@ from rest_framework.response import Response
 from console.views.base import RegionTenantHeaderView
 import logging
 
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.group_service import group_service
 from console.services.compose_service import compose_service
 

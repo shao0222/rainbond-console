@@ -5,11 +5,11 @@ from django.conf import settings
 
 from console.repositories.region_repo import region_repo
 from console.repositories.team_repo import team_repo
-from www.apiclient.baseclient import client_auth_service
-from www.apiclient.regionapi import RegionInvokeApi
-from www.apiclient.marketclient import MarketOpenAPI
+from console.market.baseclient import client_auth_service
+from console.apiclient.regionapi import RegionInvokeApi
+from console.market.market_interface import MarketOpenAPI
 from console.repositories.group import group_repo
-from www.models.main import ServiceGroup
+from console.models.services import ServiceGroup
 
 logger = logging.getLogger("default")
 region_api = RegionInvokeApi()

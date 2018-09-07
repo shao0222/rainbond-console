@@ -11,10 +11,10 @@ from rest_framework.response import Response
 
 from console.services.enterprise_services import enterprise_services
 from console.views.base import RegionTenantHeaderView
-from www.apiclient.baseclient import client_auth_service
-from www.apiclient.marketclient import MarketOpenAPI
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.market.baseclient import client_auth_service
+from console.market.market_interface import MarketOpenAPI
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger("default")
 

@@ -5,8 +5,9 @@
 from rest_framework.response import Response
 
 from console.views.base import RegionTenantHeaderView
-from www.models import TenantServiceInfo, Tenants
-from www.utils.return_message import general_message
+from console.models.main import Tenants
+from console.models.services import TenantServiceInfo
+from console.utils.return_message import general_message
 import logging
 from console.exception.main import BusinessException
 

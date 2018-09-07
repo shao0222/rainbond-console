@@ -10,10 +10,10 @@ from rest_framework.response import Response
 
 from console.services.plugin import plugin_service, plugin_version_service, plugin_config_service
 from console.views.plugin.base import PluginBaseView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.crypt import make_uuid
-from www.utils.return_message import general_message, error_message
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.crypt import make_uuid
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger("default")
 region_api = RegionInvokeApi()

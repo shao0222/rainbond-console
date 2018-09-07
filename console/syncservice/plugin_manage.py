@@ -2,10 +2,11 @@
 """
   Created on 2018/5/10.
 """
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models.plugin import TenantPlugin, PluginBuildVersion, TenantServicePluginAttr, TenantServicePluginRelation, \
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.plugin import TenantPlugin, PluginBuildVersion, TenantServicePluginAttr, TenantServicePluginRelation, \
     PluginConfigGroup, PluginConfigItems, ServicePluginConfigVar
-from www.models.main import Tenants, TenantServiceInfo
+from console.models.main import Tenants
+from console.models.services import TenantServiceInfo
 import logging
 
 region_api = RegionInvokeApi()

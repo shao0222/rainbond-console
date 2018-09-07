@@ -12,8 +12,8 @@ from console.repositories.group import group_repo
 
 from console.views.base import RegionTenantHeaderView, AlowAnyApiView
 from goodrain_web.tools import JuncheePaginator
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.backup_service import groupapp_backup_service
 from console.constants import StorageUnit
 from console.services.team_services import team_services

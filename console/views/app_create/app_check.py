@@ -9,8 +9,8 @@ from rest_framework.response import Response
 from console.views.app_config.base import AppBaseView
 from console.services.app_check_service import app_check_service
 from console.services.app import app_service
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 import logging
 from console.serializer import TenantServiceUpdateSerilizer
 

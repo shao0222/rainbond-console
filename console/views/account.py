@@ -9,16 +9,15 @@ from console.repositories.app import service_repo
 from console.repositories.perm_repo import service_perm_repo
 from console.services.enterprise_services import enterprise_services
 from console.services.perm_services import perm_services, app_perm_service
-from console.services.plugin import plugin_service
 from console.services.region_services import region_services
 from console.services.team_services import team_services
 from console.services.user_services import user_services
 from console.views.base import AlowAnyApiView
-from www.apiclient.baseclient import client_auth_service
-from www.monitorservice.monitorhook import MonitorHook
-from www.services.sso import GoodRainSSOApi
-from www.tenantservice.baseservice import CodeRepositoriesService
-from www.utils.crypt import AuthCode
+from console.market.baseclient import client_auth_service
+from console.monitorservice.monitorhook import MonitorHook
+from console.services.sso import GoodRainSSOApi
+from console.tenantservice.baseservice import CodeRepositoriesService
+from console.utils.crypt import AuthCode
 
 logger = logging.getLogger('default')
 

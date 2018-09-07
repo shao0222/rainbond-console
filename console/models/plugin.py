@@ -145,3 +145,40 @@ class ServicePluginConfigVar(BaseModel):
     protocol = models.CharField(max_length=16, help_text=u"端口协议", default="")
     create_time = models.DateTimeField(auto_now_add=True, help_text=u"创建时间")
 
+
+class TenantPluginShareInfo(BaseModel):
+    class Meta:
+        db_table = "tenant_plugin_share"
+
+    share_id = models.CharField(max_length=32, help_text=u"分享的插件ID")
+    share_version = models.CharField(max_length=32, help_text=u"分享的构建版本")
+    origin_plugin_id = models.CharField(max_length=32, help_text=u"插件原始的ID")
+    tenant_id = models.CharField(max_length=32, help_text=u"租户ID")
+    user_id = models.IntegerField(help_text=u"分享插件的用户id")
+    desc = models.CharField(max_length=256, default="", help_text=u"描述")
+    plugin_name = models.CharField(max_length=32, help_text=u"插件名称")
+    plugin_alias = models.CharField(max_length=32, help_text=u"插件别名")
+    category = models.CharField(max_length=32, help_text=u"插件类别")
+    image = models.CharField(max_length=256, null=True, blank=True, help_text=u"镜像地址")
+
+    update_info = models.CharField(max_length=256, help_text=u"分享更新说明")
+
+    min_memory = models.IntegerField(help_text=u"构建内存大小")
+    min_cpu = models.IntegerField(help_text=u"构建cpu大小")
+    build_cmd = models.CharField(max_length=128, null=True, blank=True, help_text=u"构建命令")
+    config = models.CharField(max_length=4096, help_text=u"插件配置项")
+    create_time = models.DateTimeField(auto_now_add=True, help_text=u"创建时间")
+
+
+class ConstKey():
+    UPSTREAM_PORT = "upstream_port"
+    DOWNSTREAM_PORT = "downstream_port"
+    UNDEFINE = "un_define"
+
+
+class HasNoDownStreamService(Exception):
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)

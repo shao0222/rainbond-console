@@ -9,8 +9,8 @@ from rest_framework.response import Response
 
 from console.services.plugin import plugin_config_service
 from console.views.plugin.base import PluginBaseView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.region_services import region_services
 from console.constants import PluginMetaType
 

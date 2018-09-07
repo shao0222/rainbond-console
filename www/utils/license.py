@@ -1,10 +1,8 @@
 # -*- coding: utf8 -*-
 from Crypto.Cipher import AES
-from Crypto import Random
 import base64
 import json
 from django.conf import settings
-import types
 from www.models import ConsoleConfig
 import datetime
 import logging

@@ -9,7 +9,7 @@ from console.repositories.enterprise_repo import enterprise_repo
 from console.repositories.plugin import plugin_repo
 from console.services.market_plugin_service import market_plugin_service
 from console.views.base import RegionTenantHeaderView
-from www.utils.return_message import general_message, error_message
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger('default')
 

@@ -8,8 +8,8 @@ from rest_framework.response import Response
 
 from console.services.app_config import extend_service
 from console.views.app_config.base import AppBaseView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 import logging
 
 logger = logging.getLogger("default")

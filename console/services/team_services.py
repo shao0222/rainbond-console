@@ -8,18 +8,15 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 
-from backends.models.main import RegionConfig
-from backends.services.exceptions import *
-from console.repositories.enterprise_repo import enterprise_repo
 from console.repositories.region_repo import region_repo
 from console.repositories.team_repo import team_repo
 from console.services.enterprise_services import enterprise_services
 from console.services.perm_services import perm_services
-from console.services.region_services import region_services
-from www.models.main import Tenants, PermRelTenant, TenantServiceInfo
+from console.models.main import Tenants, PermRelTenant
+from console.models.services import TenantServiceInfo
 from console.repositories.perm_repo import role_repo, role_perm_repo
 from console.models.main import TenantUserRole
-from console.repositories.group import group_repo
+
 
 logger = logging.getLogger("default")
 

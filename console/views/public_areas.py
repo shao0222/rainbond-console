@@ -6,7 +6,6 @@ from django.views.decorators.cache import never_cache
 from rest_framework.response import Response
 
 from backends.services.exceptions import GroupNotExistError
-from console.repositories.event_repo import event_repo
 from console.repositories.group import group_repo
 from console.repositories.service_repo import service_repo
 from console.services.app_actions.app_log import AppEventService
@@ -15,11 +14,11 @@ from console.services.event_services import service_event_dynamic
 from console.services.service_services import base_service
 from console.services.team_services import team_services
 from goodrain_web.tools import JuncheePaginator
-from www.utils.status_translate import get_status_info_map
+from console.utils.status_translate import get_status_info_map
 from console.views.base import RegionTenantHeaderView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.group_service import group_service
 
 event_service = AppEventService()

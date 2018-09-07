@@ -2,17 +2,18 @@
 """
   Created on 18/3/5.
 """
-from www.decorator import perm_required
-from www.apiclient.regionapi import RegionInvokeApi
+import logging
+import json
+
+from console.decorator import perm_required
+from console.apiclient.regionapi import RegionInvokeApi
 from console.views.app_config.base import AppBaseView
 from console.services.app_config.plugin_service import app_plugin_service
-from console.services.plugin import plugin_service, plugin_version_service
-from www.utils.return_message import general_message, error_message
-import logging
+from console.services.plugin import plugin_version_service
+from console.utils.return_message import general_message, error_message
 from rest_framework.response import Response
-from www.services import plugin_svc
-from www.models import ConstKey, HasNoDownStreamService
-import json
+from console.services import plugin_svc
+from console.models.plugin import HasNoDownStreamService
 
 region_api = RegionInvokeApi()
 logger = logging.getLogger("default")

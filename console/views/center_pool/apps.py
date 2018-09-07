@@ -10,8 +10,8 @@ from console.exception.main import ResourceNotEnoughException
 from console.repositories.enterprise_repo import enterprise_repo
 from console.views.base import RegionTenantHeaderView
 from goodrain_web.tools import JuncheePaginator
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 import logging
 from console.services.market_app_service import market_app_service
 from console.services.group_service import group_service

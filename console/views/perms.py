@@ -4,15 +4,16 @@ import logging
 from django.conf import settings
 from django.http import JsonResponse
 
-from www.decorator import perm_required
-from www.models import Users, TenantServiceInfo, PermRelService, PermRelTenant, service_identity, \
+from console.decorator import perm_required
+from console.models import Users, PermRelService, PermRelTenant, service_identity, \
     tenant_identity
-from www.services.sso import SSO_BASE_URL
-from www.tenantservice.baseservice import CodeRepositoriesService
-from www.utils.crypt import AuthCode
-from www.utils.giturlparse import parse as git_url_parse
-from www.utils.mail import send_invite_mail_withHtml
-from www.views import AuthedView
+from console.models.services import TenantServiceInfo
+from console.services.sso import SSO_BASE_URL
+from console.tenantservice.baseservice import CodeRepositoriesService
+from console.utils.crypt import AuthCode
+from console.utils.giturlparse import parse as git_url_parse
+from console.utils.mail import send_invite_mail_withHtml
+from console.views.auth import AuthedView
 
 logger = logging.getLogger('default')
 

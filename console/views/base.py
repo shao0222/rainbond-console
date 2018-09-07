@@ -25,7 +25,7 @@ from rest_framework_jwt.settings import api_settings
 
 from backends.services.exceptions import AuthenticationInfoHasExpiredError
 from console.exception.main import BusinessException
-from www.models import Users, Tenants
+from console.models.main import Users, Tenants
 from goodrain_web import errors
 
 jwt_get_username_from_payload = api_settings.JWT_PAYLOAD_GET_USERNAME_HANDLER

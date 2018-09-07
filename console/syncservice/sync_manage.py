@@ -7,7 +7,7 @@ import logging
 from console.constants import AppConstants
 from console.repositories.team_repo import team_gitlab_repo
 from console.repositories.app_config import image_service_relation_repo
-from www.models import ServiceCreateStep
+from console.models.services import ServiceCreateStep
 
 logger = logging.getLogger("default")
 

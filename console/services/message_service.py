@@ -5,7 +5,7 @@
 from console.repositories.message_repo import msg_repo, announcement_repo
 from console.models.main import UserMessage
 from goodrain_web.tools import JuncheePaginator
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 from console.constants import MessageType
 from django.db.models import Q
 

@@ -5,10 +5,9 @@ import logging
 from rest_framework.response import Response
 
 from backends.services.configservice import config_service
-from cadmin.models import ConsoleSysConfig
 from console.repositories.enterprise_repo import enterprise_repo
 from console.views.base import BaseApiView, AlowAnyApiView
-from www.utils.return_message import general_message, error_message
+from console.utils.return_message import general_message, error_message
 from django.conf import settings
 from console.repositories.perm_repo import role_perm_repo
 from console.repositories.user_repo import user_repo

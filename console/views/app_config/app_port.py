@@ -7,8 +7,8 @@ from rest_framework.response import Response
 
 from console.views.app_config.base import AppBaseView
 from console.services.app_config import port_service, domain_service
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from django.forms.models import model_to_dict
 import logging
 

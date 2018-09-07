@@ -12,12 +12,11 @@ from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.response import Response
 
 from console.repositories.app import service_source_repo
-from console.services.app_check_service import app_check_service
 from console.services.team_services import team_services
 from console.views.app_config.base import AppBaseView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.services.app import app_service
 from console.services.plugin import app_plugin_service
 from console.services.app_actions import ws_service
@@ -25,8 +24,8 @@ from console.services.app_config import port_service
 from console.services.group_service import group_service
 from console.services.region_services import region_services
 from console.services.compose_service import compose_service
-from www.utils.url import get_redirect_url
-from www.utils.md5Util import md5fun
+from console.utils.url import get_redirect_url
+from console.utils.md5Util import md5fun
 from django.conf import settings
 from console.constants import AppConstants, PluginCategoryConstants
 

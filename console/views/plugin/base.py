@@ -4,10 +4,11 @@
 """
 from console.exception.main import BusinessException
 from console.views.base import RegionTenantHeaderView
-from www.models import TenantPlugin, Tenants, PluginBuildVersion
+from console.models.plugin import TenantPlugin, PluginBuildVersion
+from console.models.main import Tenants
 from rest_framework.response import Response
 
-from www.utils.return_message import general_message
+from console.utils.return_message import general_message
 
 
 class PluginBaseView(RegionTenantHeaderView):

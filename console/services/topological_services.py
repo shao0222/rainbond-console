@@ -2,8 +2,8 @@
 import logging
 
 
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models import ServiceGroupRelation, TenantServiceRelation, TenantServiceInfo, TenantServicesPort, ServiceDomain
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.services import ServiceGroupRelation, TenantServiceRelation, TenantServiceInfo, TenantServicesPort, ServiceDomain
 from console.services.region_services import region_services
 
 region_api = RegionInvokeApi()

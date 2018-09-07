@@ -23,6 +23,52 @@ tenant_identity = ((u"拥有者", "owner"), (u"管理员", "admin"), (u"开发�
 service_identity = ((u"管理员", "admin"), (u"开发者", "developer"), (u"观察者", "viewer"))
 
 
+class AnonymousUser(object):
+    id = None
+    pk = None
+    username = ''
+
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return 'AnonymousUser'
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return 1  # instances always return the same hash value
+
+    def save(self):
+        raise NotImplementedError(
+            "Django doesn't provide a DB representation for AnonymousUser.")
+
+    def delete(self):
+        raise NotImplementedError(
+            "Django doesn't provide a DB representation for AnonymousUser.")
+
+    def set_password(self, raw_password):
+        raise NotImplementedError(
+            "Django doesn't provide a DB representation for AnonymousUser.")
+
+    def check_password(self, raw_password):
+        raise NotImplementedError(
+            "Django doesn't provide a DB representation for AnonymousUser.")
+
+    def get_group_permissions(self, obj=None):
+        return set()
+
+    def is_anonymous(self):
+        return True
+
+    def is_authenticated(self):
+        return False
+
+
 class BaseModel(models.Model):
     class Meta:
         abstract = True
@@ -647,5 +693,15 @@ class TenantRegionResource(BaseModel):
     net_stock = models.IntegerField(help_text=u"磁盘使用余量(M)", default=0)
     create_time = models.DateTimeField(auto_now_add=True, blank=True, help_text=u"创建时间")
     update_time = models.DateTimeField(auto_now=True, help_text=u"更新时间")
+
+
+class ConsoleConfig(BaseModel):
+    class Meta:
+        db_table = 'console_config'
+
+    key = models.CharField(max_length=50, help_text=u"配置名称")
+    value = models.CharField(max_length=1000, help_text=u"配置值")
+    description = models.TextField(null=True, blank=True, default="", help_text=u"说明")
+    update_time = models.DateTimeField(help_text=u"更新时间", null=True)
 
 

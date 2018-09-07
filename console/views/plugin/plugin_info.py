@@ -9,9 +9,9 @@ from console.views.plugin.base import PluginBaseView
 from django.views.decorators.cache import never_cache
 
 from goodrain_web.tools import JuncheePaginator
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 import logging
 from console.services.plugin import plugin_version_service, plugin_service, plugin_config_service,app_plugin_service
 import threading

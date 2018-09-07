@@ -8,7 +8,7 @@ from console.repositories.perm_repo import role_perm_repo
 from goodrain_web.errors import UrlParseError, PermissionDenied
 from www.models import Tenants, TenantServiceInfo, PermRelService, PermRelTenant, AnonymousUser
 from www.utils.return_message import general_message
-from console.models.main import ServiceRelPerms
+from console.models.services import ServiceRelPerms
 from console.services.team_services import team_services
 
 logger = logging.getLogger('default')

@@ -9,8 +9,8 @@ from rest_framework.response import Response
 
 from console.services.message_service import msg_service
 from console.views.base import RegionTenantHeaderView
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 
 
 logger = logging.getLogger('default')

@@ -7,15 +7,17 @@ from django.db import transaction
 
 from console.appstore.appstore import app_store
 from console.constants import AppConstants
-from console.models.main import RainbondCenterApp, ServiceShareRecordEvent, PluginShareRecordEvent
+from console.models.main import RainbondCenterApp, PluginShareRecordEvent
+from console.models.services import ServiceShareRecordEvent
 from console.repositories.market_app_repo import rainbond_app_repo, app_export_record_repo
 from console.repositories.plugin import plugin_repo, app_plugin_relation_repo,service_plugin_config_repo
 from console.repositories.share_repo import share_repo
 from console.services.plugin import plugin_service
 from console.services.service_services import base_service
-from www.apiclient.marketclient import MarketOpenAPI
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models import TenantServiceInfo, ServiceEvent, make_uuid
+from console.market.market_interface import MarketOpenAPI
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models.services import TenantServiceInfo, ServiceEvent
+from console.utils.crypt import make_uuid
 from console.services.group_service import group_service
 from console.services.plugin import plugin_config_service
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
 
-from www.apiclient.regionapi import RegionInvokeApi
-from www.db import BaseConnection
+from console.apiclient.regionapi import RegionInvokeApi
+from console.db.base import BaseConnection
 
 region_api = RegionInvokeApi()
 logger = logging.getLogger("default")
