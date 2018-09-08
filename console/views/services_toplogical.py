@@ -10,10 +10,9 @@ from console.repositories.group import group_repo
 from console.repositories.service_repo import service_repo
 from console.services.app_actions.app_log import AppEventService
 from console.services.topological_services import topological_service
-from console.views.app_config.base import AppBaseView
-from console.views.base import RegionTenantHeaderView, JWTAuthApiView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.utils.return_message import general_message, error_message
+from console.views.base import JWTAuthApiView
+from console.apiclient.regionapi import RegionInvokeApi
+from console.utils.return_message import general_message, error_message
 from console.services.team_services import team_services
 from rest_framework.exceptions import NotFound
 from console.services.app import service_repo

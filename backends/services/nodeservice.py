@@ -7,10 +7,10 @@ from backends.services.clusterservice import cluster_service
 from backends.services.exceptions import *
 from backends.services.httpclient import HttpInvokeApi
 from backends.services.regionservice import region_service
-from www.apiclient.regionapi import RegionInvokeApi
-from www.models import Tenants, TenantServiceInfo
-from www.models.label import *
-from www.utils.crypt import make_uuid
+from console.apiclient.regionapi import RegionInvokeApi
+from console.models import Tenants
+from console.models.services import TenantServiceInfo
+from console.models.labels import *
 
 logger = logging.getLogger("default")
 

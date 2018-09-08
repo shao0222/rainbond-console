@@ -4,7 +4,7 @@ import logging
 from rest_framework import serializers
 
 from backends.models.main import RegionConfig
-from www.models.main import Users
+from console.models.main import Users
 
 logger = logging.getLogger("default")
 

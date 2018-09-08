@@ -1,8 +1,8 @@
 # -*- coding: utf8 -*-
 import logging
 
-from www.models import TenantEnterprise
-from django.db.models import F, Q, Sum
+from console.models import TenantEnterprise
+from django.db.models import Q
 from fuzzyfinder.main import fuzzyfinder
 
 logger = logging.getLogger("default")

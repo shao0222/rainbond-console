@@ -3,12 +3,11 @@ import logging
 
 from django.db.models import Q
 import re
-from backends.services.exceptions import UserExistError, TenantNotExistError, UserNotExistError
-from backends.services.tenantservice import tenant_service as tenantService, EmailExistError, PhoneExistError, \
-    PasswordTooShortError
-from www.gitlab_http import GitlabApi
-from www.models import Tenants, Users, PermRelTenant
-from www.tenantservice.baseservice import CodeRepositoriesService
+from backends.services.exceptions import TenantNotExistError, UserNotExistError
+from backends.services.tenantservice import PasswordTooShortError
+from console.gitlab_http import GitlabApi
+from console.models import Tenants, Users, PermRelTenant
+from console.tenantservice.baseservice import CodeRepositoriesService
 from fuzzyfinder.main import fuzzyfinder
 from console.services.user_services import user_services as console_user_service
 

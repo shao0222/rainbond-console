@@ -12,8 +12,8 @@ from django.utils.decorators import available_attrs
 from django.utils.six import Module_six_moves_urllib_parse
 
 from goodrain_web.errors import UrlParseError, PermissionDenied
-from www.perms import check_perm
-from www.utils.url import get_redirect_url
+from console.perms import check_perm
+from console.utils.url import get_redirect_url
 
 logger = logging.getLogger('default')
 

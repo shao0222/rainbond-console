@@ -9,9 +9,9 @@ from rest_framework.response import Response
 
 from console.utils.timeutil import current_time_str
 from console.views.app_config.base import AppBaseView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.return_message import general_message, error_message
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.return_message import general_message, error_message
 from console.repositories.event_repo import event_repo
 
 logger = logging.getLogger("default")

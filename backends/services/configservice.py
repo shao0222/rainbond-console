@@ -7,7 +7,7 @@ import logging
 from backends.models.main import CloundBangImages
 from backends.services.exceptions import *
 from cadmin.models import ConsoleSysConfig
-from www.utils.license import LICENSE
+from console.utils.license import LICENSE
 from goodrain_web.custom_config import custom_config as custom_settings
 logger = logging.getLogger("default")
 

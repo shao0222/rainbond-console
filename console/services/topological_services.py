@@ -57,7 +57,7 @@ class TopologicalService(object):
                 status_cn = None
             if status:
                 if not status_cn:
-                    from www.utils.status_translate import status_map
+                    from console.utils.status_translate import status_map
                     status_info_map = status_map().get(status, None)
                     if not status_info_map:
                         status_cn = "未知"

@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 from datetime import datetime
 from django.db import models
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 from django.conf import settings
 
 

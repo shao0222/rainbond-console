@@ -8,10 +8,10 @@ from backends.services.resultservice import *
 from console.services.region_services import region_services
 from console.services.team_services import team_services
 from console.views.base import JWTAuthApiView, RegionTenantHeaderView
-from www.apiclient.marketclient import MarketOpenAPI
-from www.utils.return_message import error_message, general_message
+from console.market.market_interface import MarketOpenAPI
+from console.utils.return_message import error_message, general_message
 from console.services.user_services import user_services
-from www.decorator import perm_required
+from console.decorator import perm_required
 
 logger = logging.getLogger("default")
 market_api = MarketOpenAPI()

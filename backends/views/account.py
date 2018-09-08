@@ -11,10 +11,8 @@ from backends.services.resultservice import *
 from backends.services.userservice import user_service
 from backends.views.base import BaseAPIView
 from console.views.base import AlowAnyApiView
-from www.apiclient.baseclient import client_auth_service
-from www.services import enterprise_svc
-from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User as TokenAuthUser
+from console.market.baseclient import client_auth_service
+from console.services import enterprise_svc
 from console.services.enterprise_services import enterprise_services
 from backends.services.authservice import auth_service
 

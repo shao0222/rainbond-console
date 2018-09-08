@@ -7,15 +7,14 @@ from django.views.decorators.cache import never_cache
 from rest_framework.response import Response
 
 from backends.services.exceptions import SameIdentityError, UserNotExistError
-from console.repositories.user_repo import user_repo
 from console.services.team_services import team_services
 from console.services.user_services import user_services
 from console.views.base import BaseApiView, JWTAuthApiView, AlowAnyApiView
-from www.apiclient.baseclient import HttpClient
-from www.auth import login, authenticate, logout
-from www.models import AnonymousUser
-from www.services import user_svc
-from www.utils.return_message import general_message, error_message
+from console.market.baseclient import HttpClient
+from console.auth import login, authenticate, logout
+from console.models import AnonymousUser
+from console.services import user_svc
+from console.utils.return_message import general_message, error_message
 
 logger = logging.getLogger("default")
 

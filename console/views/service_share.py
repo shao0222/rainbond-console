@@ -1,23 +1,23 @@
 # -*- coding: utf-8 -*-
 import datetime
-import json
 import logging
 
 from django.db.models import Q
 from rest_framework.response import Response
 
 from backends.services.exceptions import UserNotExistError
-from console.models.main import ServiceShareRecordEvent, PluginShareRecordEvent
+from console.models.main import PluginShareRecordEvent
+from console.models.services import ServiceShareRecordEvent
 from console.repositories.group import group_repo
 from console.repositories.share_repo import share_repo
 from console.services.group_service import group_service
 from console.services.share_services import share_service
 from console.services.user_services import user_services
 from console.views.base import RegionTenantHeaderView
-from www.apiclient.regionapi import RegionInvokeApi
-from www.decorator import perm_required
-from www.utils.crypt import make_uuid
-from www.utils.return_message import general_message, error_message
+from console.apiclient.regionapi import RegionInvokeApi
+from console.decorator import perm_required
+from console.utils.crypt import make_uuid
+from console.utils.return_message import general_message, error_message
 from console.services.enterprise_services import enterprise_services
 
 

@@ -2,12 +2,12 @@ from datetime import datetime
 
 from django.conf import settings
 from django.middleware.csrf import rotate_token
-from django.contrib.auth import load_backend, authenticate
+from django.contrib.auth import load_backend
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.crypto import constant_time_compare
 from rest_framework_jwt.settings import api_settings
-from rest_framework_jwt.views import JSONWebTokenAPIView, jwt_response_payload_handler
-from www.monitorservice.monitorhook import MonitorHook
+from rest_framework_jwt.views import jwt_response_payload_handler
+from console.monitorservice.monitorhook import MonitorHook
 
 SESSION_KEY = '_auth_user_id'
 BACKEND_SESSION_KEY = '_auth_user_backend'
@@ -110,7 +110,7 @@ def logout(request):
         request.session[LANGUAGE_SESSION_KEY] = language
 
     if hasattr(request, 'user'):
-        from www.models import AnonymousUser
+        from console.models import AnonymousUser
         request.user = AnonymousUser()
     monitorHook.logoutMonitor(user)
 
@@ -120,7 +120,7 @@ def get_user(request):
     Returns the user model instance associated with the given request session.
     If no user is retrieved an instance of `AnonymousUser` is returned.
     """
-    from www.models import AnonymousUser
+    from console.models import AnonymousUser
     user = None
     try:
         user_id = request.session[SESSION_KEY]

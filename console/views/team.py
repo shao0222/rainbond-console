@@ -6,12 +6,10 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import Q
 from rest_framework.response import Response
 import re
-import datetime
 
 from backends.services.configservice import config_service
 from backends.services.exceptions import *
 from backends.services.resultservice import *
-from cadmin.models import ConsoleSysConfig
 from console.models import UserMessage
 from console.repositories.apply_repo import apply_repo
 from console.repositories.enterprise_repo import enterprise_user_perm_repo, enterprise_repo
@@ -25,9 +23,9 @@ from console.services.perm_services import perm_services
 from console.services.region_services import region_services
 from console.views.base import JWTAuthApiView
 from goodrain_web.tools import JuncheePaginator
-from www.models import Tenants
-from www.perms import PermActions, get_highest_identity
-from www.utils.return_message import general_message, error_message
+from console.models.main import Tenants
+from console.perms import PermActions, get_highest_identity
+from console.utils.return_message import general_message, error_message
 from console.repositories.perm_repo import role_repo
 from console.repositories.region_repo import region_repo
 

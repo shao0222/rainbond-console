@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from backends.views.base import BaseAPIView
 from backends.services.labelservice import label_service
 from backends.services.resultservice import *
-from www.models.label import Labels
+from console.models.labels import Labels
 
 logger = logging.getLogger("default")
 

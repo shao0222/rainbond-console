@@ -705,3 +705,18 @@ class ConsoleConfig(BaseModel):
     update_time = models.DateTimeField(help_text=u"更新时间", null=True)
 
 
+class PhoneCode(BaseModel):
+    class Meta:
+        db_table = 'phone_code'
+
+    phone = models.CharField(max_length=11, help_text=u"手机号码")
+    type = models.CharField(max_length=10, help_text=u"类型")
+    code = models.CharField(max_length=10, help_text=u"类型")
+    message_id = models.CharField(
+        max_length=100, help_text=u"aliyun发送的message_id")
+    status = models.IntegerField(help_text=u'发送状态0已发送1发送成功2发送失败', default=0)
+    create_time = models.DateTimeField(
+        auto_now_add=True, blank=True, help_text=u"创建时间")
+
+
+

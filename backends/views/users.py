@@ -9,7 +9,7 @@ from backends.services.tenantservice import tenant_service
 from backends.services.userservice import user_service
 from base import BaseAPIView
 from goodrain_web.tools import JuncheePaginator
-from www.models import Tenants
+from console.models import Tenants
 from console.services.team_services import team_services as console_team_service
 from console.services.enterprise_services import enterprise_services as console_enterprise_service
 from console.utils.timeutil import time_to_str

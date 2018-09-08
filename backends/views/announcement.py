@@ -47,7 +47,7 @@ class AllAnnouncementView(BaseAPIView):
                 result = generate_result(
                     "1003", "params error", "参数错误")
                 return Response(result)
-            from www.utils.crypt import make_uuid
+            from console.utils.crypt import make_uuid
             announcement_id = make_uuid()
             params = dict(serializer.data)
             params.update({"announcement_id": announcement_id})

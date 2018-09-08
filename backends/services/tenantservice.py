@@ -8,9 +8,10 @@ from fuzzyfinder.main import fuzzyfinder
 
 from backends.models.main import RegionConfig
 from backends.services.exceptions import *
-from www.models.main import Tenants, PermRelTenant, Users, TenantRegionInfo, TenantServiceInfo, TenantEnterprise
-from www.utils import sn
-from www.utils.license import LICENSE
+from console.models.main import Tenants, PermRelTenant, Users, TenantRegionInfo, TenantEnterprise
+from console.models.services import TenantServiceInfo
+from console.utils import sn
+from console.utils.license import LICENSE
 
 logger = logging.getLogger("default")
 

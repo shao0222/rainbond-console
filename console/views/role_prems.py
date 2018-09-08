@@ -9,12 +9,12 @@ from backends.services.exceptions import *
 from backends.services.resultservice import *
 from console.services.team_services import team_services
 from console.services.user_services import user_services
-from console.views.base import JWTAuthApiView, AlowAnyApiView
-from www.decorator import perm_required
-from www.models import Tenants
+from console.views.base import JWTAuthApiView
+from console.decorator import perm_required
+from console.models.main import Tenants
 from console.repositories.perm_repo import role_repo, role_perm_repo
 from console.views.app_config.base import AppBaseView
-from www.utils.return_message import general_message, error_message
+from console.utils.return_message import general_message, error_message
 from console.services.perm_services import app_perm_service
 from console.repositories.user_repo import user_repo
 

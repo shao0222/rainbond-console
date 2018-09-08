@@ -9,7 +9,7 @@ from backends.services.regionservice import region_service
 from backends.services.resultservice import *
 from backends.services.clusterservice import cluster_service
 from backends.views.base import BaseAPIView
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 
 logger = logging.getLogger("default")
 

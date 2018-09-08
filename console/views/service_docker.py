@@ -6,8 +6,8 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.views.decorators.cache import never_cache
 from console.services.region_services import region_services
-from www.utils.md5Util import md5fun
-from www.utils.url import get_redirect_url
+from console.utils.md5Util import md5fun
+from console.utils.url import get_redirect_url
 from console.repositories.team_repo import team_repo
 from console.repositories.app import service_repo
 import logging
@@ -31,7 +31,7 @@ class DockerContainerView(View):
         else:
             raise http.Http404
 
-        service = service_repo.get_service_by_tenant_and_alias(self.tenant.tenant_id,self.serviceAlias)
+        service = service_repo.get_service_by_tenant_and_alias(self.tenant.tenant_id, self.serviceAlias)
         if service:
             self.service = service
         else:

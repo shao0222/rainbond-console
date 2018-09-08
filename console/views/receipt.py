@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-from www.apiclient.marketclient import MarketOpenAPI
+from console.market.market_interface import MarketOpenAPI
 from console.views.base import JWTAuthApiView
-from www.utils.return_message import general_message, error_message
+from console.utils.return_message import general_message
 from console.services.team_services import team_services
 from django.http.response import JsonResponse
 

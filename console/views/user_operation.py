@@ -10,18 +10,17 @@ from rest_framework_jwt.settings import api_settings
 from console.forms.users_operation import RegisterForm
 from console.repositories.perm_repo import perms_repo
 from console.services.enterprise_services import enterprise_services
-from console.services.plugin import plugin_service
 from console.services.region_services import region_services
 from console.services.team_services import team_services
 from console.services.user_services import user_services
 from console.views.base import BaseApiView, JWTAuthApiView
-from www import perms
-from www.forms.account import PasswordResetForm
-from www.models import Users, SuperAdminUser
-from www.perms import PermActions, UserActions
-from www.utils.crypt import AuthCode
-from www.utils.mail import send_reset_pass_mail
-from www.utils.return_message import general_message, error_message
+from console import perms
+from console.forms.account import PasswordResetForm
+from console.models import Users, SuperAdminUser
+from console.perms import PermActions, UserActions
+from console.utils.crypt import AuthCode
+from console.utils.mail import send_reset_pass_mail
+from console.utils.return_message import general_message, error_message
 
 from console.repositories.perm_repo import role_perm_repo, role_repo
 

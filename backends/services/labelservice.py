@@ -5,8 +5,8 @@ from django.db.models import Q
 from fuzzyfinder.main import fuzzyfinder
 
 from backends.services.exceptions import *
-from www.models.label import Labels, ServiceLabels, NodeLabels
-from www.utils.crypt import make_uuid
+from console.models.labels import Labels, ServiceLabels, NodeLabels
+from console.utils.crypt import make_uuid
 
 logger = logging.getLogger("default")
 

@@ -2,22 +2,19 @@
 import base64
 import logging
 import pickle
-import random
-import socket
-import string
 import os
 
 from console.models import DeployRelation
 from console.repositories.deploy_repo import deploy_repo
-from console.services.team_services import team_services
-from console.views.base import AlowAnyApiView, JWTAuthApiView
+from console.views.base import AlowAnyApiView
 from rest_framework.response import Response
 from console.views.app_config.base import AppBaseView
-from www.models.main import Tenants, TenantServiceInfo, Users
+from console.models.main import Tenants, Users
+from console.models.services import TenantServiceInfo
 from console.services.app import app_service
-from www.utils.return_message import general_message, error_message
+from console.utils.return_message import general_message, error_message
 from console.services.user_services import user_services
-from www.decorator import perm_required
+from console.decorator import perm_required
 
 logger = logging.getLogger("default")
 

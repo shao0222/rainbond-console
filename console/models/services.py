@@ -8,7 +8,7 @@ from django.db.models.fields import DateTimeField
 from .main import Users
 from .fields import GrOptionsCharField
 from django.conf import settings
-from www.utils.crypt import make_uuid
+from console.utils.crypt import make_uuid
 
 
 logger = logging.getLogger("default")

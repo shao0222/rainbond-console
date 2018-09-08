@@ -10,7 +10,7 @@ from backends.services.regionservice import region_service
 from console.services.team_services import team_services as console_team_service
 from base import BaseAPIView
 from goodrain_web.tools import JuncheePaginator
-from www.models import Tenants, PermRelTenant
+from console.models import Tenants, PermRelTenant
 from console.services.enterprise_services import enterprise_services
 from console.services.user_services import user_services as console_user_service
 from console.services.perm_services import perm_services as console_perm_service
