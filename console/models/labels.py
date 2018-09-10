@@ -5,7 +5,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models.fields.files import FileField
 
-
 logger = logging.getLogger("default")
 
 app_scope = (("enterprise", u"企业"), ("team", u"团队"), ("goodrain", u"好雨云市"))

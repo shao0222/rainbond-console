@@ -218,8 +218,9 @@ class ComposeServiceRelation(BaseModel):
 
 
 class TeamGitlabInfo(BaseModel):
+    """团队gitlab信息"""
     class Meta:
-        db_table = "team_gitlab_info"
+        db_table = "tenant_gitlab_info"
 
     team_id = models.CharField(max_length=32, help_text=u"团队ID")
     repo_name = models.CharField(max_length=100, help_text=u"代码仓库名称")
@@ -293,7 +294,7 @@ class PermGroup(BaseModel):
     """权限组，用于给权限分组分类"""
 
     class Meta:
-        db_table = 'tenant_permission_group'
+        db_table = 'permission_group'
 
     group_name = models.CharField(max_length=64, help_text=u'组名')
 
@@ -306,7 +307,6 @@ class AppExportRecord(BaseModel):
 
     class Meta:
         db_table = 'app_export_record'
-
 
     group_key = models.CharField(max_length=32, help_text=u"导出应用的key")
     version = models.CharField(max_length=20, help_text=u"导出应用的版本")
@@ -354,7 +354,7 @@ class AppImportRecord(BaseModel):
 
 class GroupAppBackupRecord(BaseModel):
     class Meta:
-        db_table = 'groupapp_backup'
+        db_table = 'group_app_backup'
 
     group_id = models.IntegerField(help_text=u"组ID")
     event_id = models.CharField(max_length=32, null=True, blank=True, help_text=u"事件id")
@@ -377,7 +377,7 @@ class GroupAppBackupRecord(BaseModel):
 
 class GroupAppMigrateRecord(BaseModel):
     class Meta:
-        db_table = 'groupapp_migrate'
+        db_table = 'group_app_migrate'
 
     group_id = models.IntegerField(help_text=u"组ID")
     event_id = models.CharField(max_length=32, null=True, blank=True, help_text=u"事件id")
@@ -397,7 +397,7 @@ class GroupAppMigrateRecord(BaseModel):
 
 class GroupAppBackupImportRecord(BaseModel):
     class Meta:
-        db_table = 'groupapp_backup_import'
+        db_table = 'group_app_backup_import'
 
     event_id = models.CharField(max_length=32, null=True, blank=True, help_text=u"事件id")
     status = models.CharField(max_length=15, null=True, blank=True, help_text=u"时间请求状态")
@@ -409,8 +409,9 @@ class GroupAppBackupImportRecord(BaseModel):
 
 
 class Applicants(BaseModel):
+    """申请表"""
     class Meta:
-        db_table = 'applicants'
+        db_table = 'apply'
 
     # 用户ID
     user_id = models.IntegerField(help_text=u'申请用户ID')
@@ -427,6 +428,7 @@ class Applicants(BaseModel):
 
 
 class DeployRelation(BaseModel):
+    """部署关系"""
     class Meta:
         db_table = "deploy_relation"
 
@@ -439,7 +441,7 @@ class DeployRelation(BaseModel):
 
 class TenantEnterpriseToken(BaseModel):
     class Meta:
-        db_table = 'tenant_enterprise_token'
+        db_table = 'enterprise_token'
         unique_together = ('enterprise_id', 'access_target')
 
     enterprise_id = models.IntegerField(default=0, help_text=u"企业id")
@@ -457,8 +459,9 @@ class TenantEnterpriseToken(BaseModel):
 
 
 class TenantEnterprise(BaseModel):
+    """企业"""
     class Meta:
-        db_table = 'tenant_enterprise'
+        db_table = 'enterprise'
 
     enterprise_id = models.CharField(max_length=32, unique=True, help_text=u"企业id")
     enterprise_name = models.CharField(max_length=64, help_text=u"企业名称")
@@ -473,15 +476,15 @@ class TenantEnterprise(BaseModel):
 
 class Tenants(BaseModel):
     """
-    租户表
+    团队表
     """
     class Meta:
         db_table = 'tenant_info'
 
     tenant_id = models.CharField(
-        max_length=33, unique=True, default=make_tenant_id, help_text=u"租户id")
+        max_length=33, unique=True, default=make_tenant_id, help_text=u"团队id")
     tenant_name = models.CharField(
-        max_length=40, unique=True, help_text=u"租户名称")
+        max_length=40, unique=True, help_text=u"团队名称")
     region = models.CharField(
         max_length=30, default='', help_text=u"区域中心")
     is_active = models.BooleanField(default=True, help_text=u"激活状态")
@@ -491,7 +494,7 @@ class Tenants(BaseModel):
         max_digits=10, decimal_places=2, default=0.00, help_text=u"账户余额")
     create_time = models.DateTimeField(
         auto_now_add=True, blank=True, help_text=u"创建时间")
-    creater = models.IntegerField(help_text=u"租户创建者", default=0)
+    creater = models.IntegerField(help_text=u"团队创建者", default=0)
     limit_memory = models.IntegerField(help_text=u"内存大小单位（M）", default=1024)
     update_time = models.DateTimeField(auto_now=True, help_text=u"更新时间")
     pay_level = models.CharField(
@@ -505,6 +508,7 @@ class Tenants(BaseModel):
 
 
 class Users(models.Model):
+    """用户"""
     USERNAME_FIELD = 'nick_name'
 
     class Meta:
@@ -611,7 +615,7 @@ class PermRelTenant(BaseModel):
     identity ：租户权限
     """
     class Meta:
-        db_table = 'tenant_perms'
+        db_table = 'tenant_user_relation'
 
     user_id = models.IntegerField(help_text=u"关联用户")
     tenant_id = models.IntegerField(help_text=u"团队id")
@@ -636,8 +640,9 @@ class PermRelService(BaseModel):
 
 
 class TenantRegionInfo(BaseModel):
+    """数据中心"""
     class Meta:
-        db_table = 'tenant_region'
+        db_table = 'region'
         unique_together = (('tenant_id', 'region_name'),)
 
     tenant_id = models.CharField(
@@ -659,7 +664,7 @@ class TenantRegionInfo(BaseModel):
 
 class TenantRegionPayModel(BaseModel):
     class Meta:
-        db_table = 'tenant_region_pay_model'
+        db_table = 'region_pay_model'
 
     tenant_id = models.CharField(max_length=32, help_text=u"租户id")
     region_name = models.CharField(max_length=20, help_text=u"区域中心名称")
@@ -679,7 +684,7 @@ class TenantRegionPayModel(BaseModel):
 
 class TenantRegionResource(BaseModel):
     class Meta:
-        db_table = 'tenant_region_resource'
+        db_table = 'region_resource'
         unique_together = (('tenant_id', 'region_name'),)
 
     enterprise_id = models.CharField(max_length=32, help_text=u"企业id")

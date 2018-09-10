@@ -55,7 +55,7 @@ class BaseModel(models.Model):
 
 
 class ServiceShareRecord(BaseModel):
-    """服务分享记录"""
+    """应用分享记录"""
 
     class Meta:
         db_table = "service_share_record"
@@ -75,7 +75,7 @@ class ServiceShareRecord(BaseModel):
 
 
 class ServiceShareRecordEvent(BaseModel):
-    """服务分享订单关联发布事件"""
+    """应用分享订单关联发布事件"""
 
     class Meta:
         db_table = "service_share_record_event"
@@ -98,10 +98,10 @@ class ServiceShareRecordEvent(BaseModel):
 
 
 class ServiceSourceInfo(BaseModel):
-    """服务源信息"""
+    """应用源信息"""
 
     class Meta:
-        db_table = "service_source"
+        db_table = "service_source_info"
 
     service_id = models.CharField(max_length=32, help_text=u"服务ID")
     team_id = models.CharField(max_length=32, help_text=u"服务所在团队ID")
@@ -112,8 +112,9 @@ class ServiceSourceInfo(BaseModel):
 
 
 class ServiceRecycleBin(BaseModel):
+    """应用回收"""
     class Meta:
-        db_table = 'tenant_service_recycle_bin'
+        db_table = 'service_recycle_bin'
         unique_together = ('tenant_id', 'service_alias')
 
     service_id = models.CharField(
@@ -208,8 +209,9 @@ class ServiceRecycleBin(BaseModel):
 
 
 class ServiceRelationRecycleBin(BaseModel):
+    """应用关系回收"""
     class Meta:
-        db_table = 'tenant_service_relation_recycle_bin'
+        db_table = 'service_relation_recycle_bin'
         unique_together = ('service_id', 'dep_service_id')
 
     tenant_id = models.CharField(max_length=32, help_text=u"租户id")
@@ -224,7 +226,7 @@ class ServiceRelationRecycleBin(BaseModel):
 
 
 class ServiceRelPerms(BaseModel):
-    """一个用户在一个应用下的权限"""
+    """用户在应用下的权限"""
 
     class Meta:
         db_table = 'service_user_perms'
@@ -238,8 +240,9 @@ class ServiceRelPerms(BaseModel):
 
 
 class TenantServiceInfo(BaseModel):
+    """应用"""
     class Meta:
-        db_table = 'tenant_service'
+        db_table = 'service'
         unique_together = ('tenant_id', 'service_alias')
 
     service_id = models.CharField(
@@ -368,6 +371,7 @@ class TenantServiceInfo(BaseModel):
 
 
 class ServiceDomain(BaseModel):
+    """应用域名"""
     class Meta:
         db_table = 'service_domain'
 
@@ -386,6 +390,7 @@ class ServiceDomain(BaseModel):
 
 
 class ServiceDomainCertificate(BaseModel):
+    """应用域名证书"""
     class Meta:
         db_table = 'service_domain_certificate'
 
@@ -450,7 +455,7 @@ class ServicePaymentNotify(BaseModel):
 
 class TenantServiceEnv(BaseModel):
     class Meta:
-        db_table = 'tenant_service_env'
+        db_table = 'service_env'
 
     service_id = models.CharField(max_length=32, help_text=u"服务id")
     language = models.CharField(
@@ -464,6 +469,7 @@ class TenantServiceEnv(BaseModel):
 
 
 class ServiceExtendMethod(BaseModel):
+    """待删除"""
     class Meta:
         db_table = 'app_service_extend_method'
 
@@ -490,7 +496,7 @@ class ServiceExtendMethod(BaseModel):
 
 class TenantServiceEnvVar(BaseModel):
     class Meta:
-        db_table = 'tenant_service_env_var'
+        db_table = 'service_env_var'
 
     tenant_id = models.CharField(max_length=32, help_text=u"租户id")
     service_id = models.CharField(
@@ -509,8 +515,9 @@ class TenantServiceEnvVar(BaseModel):
 
 
 class TenantServicesPort(BaseModel):
+    """应用端口"""
     class Meta:
-        db_table = 'tenant_services_port'
+        db_table = 'services_port'
         unique_together = ('service_id', 'container_port')
 
     tenant_id = models.CharField(
@@ -531,10 +538,10 @@ class TenantServicesPort(BaseModel):
 
 
 class ImageServiceRelation(BaseModel):
-    """image_url拉取的service的对应关系"""
+    """应用镜像关系"""
 
     class Meta:
-        db_table = 'tenant_service_image_relation'
+        db_table = 'service_image_relation'
 
     tenant_id = models.CharField(max_length=32, help_text=u"租户id")
     service_id = models.CharField(max_length=32, help_text=u"服务id")
@@ -544,10 +551,10 @@ class ImageServiceRelation(BaseModel):
 
 
 class TenantServiceVolume(BaseModel):
-    """数据持久化表格"""
+    """应用存储"""
 
     class Meta:
-        db_table = 'tenant_service_volume'
+        db_table = 'service_volume'
 
     SHARE = 'share-file'
     LOCAL = 'local'
@@ -562,8 +569,9 @@ class TenantServiceVolume(BaseModel):
 
 
 class TenantServiceInfoDelete(BaseModel):
+    """应用删除"""
     class Meta:
-        db_table = 'tenant_service_delete'
+        db_table = 'service_delete'
 
     service_id = models.CharField(
         max_length=32, unique=True, help_text=u"服务id")
@@ -647,7 +655,7 @@ class TenantServiceInfoDelete(BaseModel):
     update_time = models.DateTimeField(auto_now_add=True, blank=True, help_text=u"更新时间")
     tenant_service_group_id = models.IntegerField(default=0, help_text=u"应用归属的服务组id")
     check_uuid = models.CharField(
-        max_length=36, blank=True, null=True, default="", help_text=u"服务id")
+        max_length=36, blank=True, null=True, default="", help_text=u"应用id")
     check_event_id = models.CharField(
         max_length=32, blank=True, null=True, default="", help_text=u"应用检测事件ID")
     docker_cmd = models.CharField(
@@ -660,9 +668,9 @@ class TenantServiceInfoDelete(BaseModel):
 
 class TenantServiceAuth(BaseModel):
     class Meta:
-        db_table = 'tenant_service_auth'
+        db_table = 'service_auth'
 
-    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    service_id = models.CharField(max_length=32, help_text=u"应用id")
     user = models.CharField(
         max_length=40, null=True, blank=True, help_text=u"代码语言")
     password = models.CharField(
@@ -673,23 +681,24 @@ class TenantServiceAuth(BaseModel):
 
 class TenantServiceMountRelation(BaseModel):
     class Meta:
-        db_table = 'tenant_service_mnt_relation'
+        db_table = 'service_mnt_relation'
         unique_together = ('service_id', 'dep_service_id', 'mnt_name')
 
-    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
-    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    tenant_id = models.CharField(max_length=32, help_text=u"团队id")
+    service_id = models.CharField(max_length=32, help_text=u"应用id")
     dep_service_id = models.CharField(max_length=32, help_text=u"依赖服务id")
     mnt_name = models.CharField(max_length=100, help_text=u"mnt name")
     mnt_dir = models.CharField(max_length=400, help_text=u"mnt dir")
 
 
 class TenantServiceRelation(BaseModel):
+    """团队应用关系"""
     class Meta:
         db_table = 'tenant_service_relation'
         unique_together = ('service_id', 'dep_service_id')
 
-    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
-    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    tenant_id = models.CharField(max_length=32, help_text=u"团队id")
+    service_id = models.CharField(max_length=32, help_text=u"应用id")
     dep_service_id = models.CharField(max_length=32, help_text=u"依赖服务id")
     dep_service_type = models.CharField(
         max_length=50,
@@ -703,18 +712,19 @@ class ServiceCreateStep(BaseModel):
     class Meta:
         db_table = 'service_create_step'
 
-    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
-    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    tenant_id = models.CharField(max_length=32, help_text=u"团队id")
+    service_id = models.CharField(max_length=32, help_text=u"应用id")
     app_step = models.IntegerField(default=1, help_text=u"创建应用的步数")
 
 
 class ServiceEvent(BaseModel):
+    """应用事件"""
     class Meta:
         db_table = 'service_event'
 
     event_id = models.CharField(max_length=32, help_text=u"操作id")
-    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
-    service_id = models.CharField(max_length=32, help_text=u"服务id")
+    tenant_id = models.CharField(max_length=32, help_text=u"团队id")
+    service_id = models.CharField(max_length=32, help_text=u"应用d")
     user_name = models.CharField(max_length=50, help_text=u"操作用户")
     start_time = models.DateTimeField(help_text=u"操作开始时间")
     end_time = models.DateTimeField(help_text=u"操作结束时间", null=True)
@@ -734,7 +744,7 @@ class ServiceEvent(BaseModel):
 
 
 class ServiceGroup(BaseModel):
-    """服务分组"""
+    """应用分组"""
 
     class Meta:
         db_table = 'service_group'
@@ -746,7 +756,7 @@ class ServiceGroup(BaseModel):
 
 
 class ServiceGroupRelation(BaseModel):
-    """服务与分组关系"""
+    """应用与分组关系"""
 
     class Meta:
         db_table = 'service_group_relation'
@@ -763,7 +773,7 @@ class TenantServiceGroup(BaseModel):
     class Meta:
         db_table = 'tenant_service_group'
 
-    tenant_id = models.CharField(max_length=32, help_text=u"租户id")
+    tenant_id = models.CharField(max_length=32, help_text=u"团队id")
     group_name = models.CharField(max_length=64, help_text=u"服务组名")
     group_alias = models.CharField(max_length=64, help_text=u"服务别名")
     group_key = models.CharField(max_length=32, help_text=u"服务组id")
@@ -883,6 +893,7 @@ class ServiceInfo(BaseModel):
 
 
 class AppServiceEnv(BaseModel):
+    # 待删除
     """ 服务环境配置 """
 
     class Meta:
@@ -912,6 +923,7 @@ class AppServiceEnv(BaseModel):
 
 
 class AppServicePort(BaseModel):
+    # 待删除
     """ 服务端口配置 """
 
     class Meta:
@@ -928,10 +940,10 @@ class AppServicePort(BaseModel):
 
 
 class AppServiceRelation(BaseModel):
-    """ 服务依赖关系 """
+    """ 应用依赖关系 """
 
     class Meta:
-        db_table = 'app_service_relation'
+        db_table = 'service_rely_relation'
 
     service_key = models.CharField(max_length=32, help_text=u"服务key")
     app_version = models.CharField(max_length=20, null=False, help_text=u"当前最新版本")
@@ -952,6 +964,7 @@ class AppServiceRelation(BaseModel):
 
 
 class AppServiceVolume(BaseModel):
+    # 待删除
     """发布数据持久化表格"""
 
     class Meta:
@@ -976,6 +989,7 @@ class AppServiceVolume(BaseModel):
 
 
 class AppServiceGroup(BaseModel):
+    # 待删除
     """服务组分享记录"""
 
     class Meta:
@@ -1006,6 +1020,7 @@ class AppServiceGroup(BaseModel):
 
 
 class PublishedGroupServiceRelation(BaseModel):
+    # 待删除
     """分享的服务组和服务的关系"""
 
     class Meta:
@@ -1018,6 +1033,7 @@ class PublishedGroupServiceRelation(BaseModel):
 
 
 class ServiceConsume(BaseModel):
+    """待删除"""
     class Meta:
         db_table = 'service_consume'
 
@@ -1046,8 +1062,9 @@ class ServiceConsume(BaseModel):
         max_digits=10, decimal_places=2, default=0.00, help_text=u"磁盘按需金额")
 
 
-# 服务--app关系表格
+
 class AppService(BaseModel):
+    # 待删除
     """ 服务发布表格 """
 
     class Meta:
@@ -1105,6 +1122,7 @@ class AppService(BaseModel):
 
 
 class AppServiceShareInfo(BaseModel):
+    # 待删除
     """普通发布存储环境是否可修改信息"""
 
     class Meta:
@@ -1118,6 +1136,7 @@ class AppServiceShareInfo(BaseModel):
 
 
 class ServiceFeeBill(BaseModel):
+    # 待删除
     class Meta:
         db_table = 'service_fee_bill'
 
@@ -1137,6 +1156,7 @@ class ServiceFeeBill(BaseModel):
 
 
 class TenantServiceStatics(BaseModel):
+    # 待删除
     class Meta:
         db_table = 'tenant_service_statics'
         unique_together = ('service_id', 'time_stamp')

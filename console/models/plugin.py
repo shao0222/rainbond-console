@@ -14,7 +14,7 @@ class TenantPlugin(BaseModel):
     """插件基础信息"""
 
     class Meta:
-        db_table = "tenant_plugin"
+        db_table = "plugin_info"
 
     plugin_id = models.CharField(max_length=32, help_text=u"插件ID")
     tenant_id = models.CharField(max_length=32, help_text=u"租户ID")
@@ -93,7 +93,7 @@ class TenantServicePluginRelation(BaseModel):
     """服务和插件关系"""
 
     class Meta:
-        db_table = "tenant_service_plugin_relation"
+        db_table = "service_plugin_relation"
 
     service_id = models.CharField(max_length=32, help_text=u"服务ID")
     plugin_id = models.CharField(max_length=32, help_text=u"插件ID")
@@ -107,7 +107,7 @@ class TenantServicePluginAttr(BaseModel):
     """旧版服务插件属性"""
 
     class Meta:
-        db_table = "tenant_service_plugin_attr"
+        db_table = "service_plugin_attr"
 
     service_id = models.CharField(max_length=32, help_text=u"服务ID")
     service_alias = models.CharField(max_length=32, help_text=u"主服务别名")
@@ -148,7 +148,7 @@ class ServicePluginConfigVar(BaseModel):
 
 class TenantPluginShareInfo(BaseModel):
     class Meta:
-        db_table = "tenant_plugin_share"
+        db_table = "plugin_share"
 
     share_id = models.CharField(max_length=32, help_text=u"分享的插件ID")
     share_version = models.CharField(max_length=32, help_text=u"分享的构建版本")
