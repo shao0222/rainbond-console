@@ -29,7 +29,7 @@ from www.utils.return_message import general_message, error_message
 from console.repositories.perm_repo import role_repo
 from console.repositories.region_repo import region_repo
 from console.utils.timeutil import time_to_str
-from backends.views.base import BaseAPIView
+from console.views.base import BaseApiView
 from backends.services.tenantservice import tenant_service
 from console.services.enterprise_services import enterprise_services as console_enterprise_service
 from console.services.team_services import team_services as console_team_service
@@ -1132,7 +1132,7 @@ class AllUserView(JWTAuthApiView):
         return Response(result)
 
 
-class TenantsView(BaseAPIView):
+class TenantsView(BaseApiView):
     def get(self, request, *args, **kwargs):
         """
         模糊查询团队
@@ -1172,7 +1172,7 @@ class TenantsView(BaseAPIView):
         return Response(result)
 
 
-class TenantUserView(BaseAPIView):
+class TenantUserView(BaseApiView):
     def get(self, request, tenant_name, *args, **kwargs):
         """
         获取某团队下的所有用户
@@ -1276,4 +1276,38 @@ class TenantUserView(BaseAPIView):
             logger.exception(e)
             result = generate_result("9999", "system error", "系统异常")
         return Response(result)
+
+
+class UserBatchDeleteView(BaseApiView):
+    def delete(self, request, tenant_name, *args, **kwargs):
+        """
+        批量删除团队内的用户
+        ---
+        parameters:
+            - name: tenant_name
+              description: 团队名称
+              required: true
+              type: string
+              paramType: path
+            - name: user_ids
+              description: 用户名 userId1,userID2 ...
+              required: true
+              type: string
+              paramType: form
+        """
+        user_ids = request.data.get("user_ids", None)
+        try:
+            user_id_list = user_ids.split(",")
+            user_services.batch_delete_users(tenant_name, user_id_list)
+            code = "0000"
+            msg = "success"
+            msg_show = "删除成功"
+            result = generate_result(code, msg, msg_show)
+        except Tenants.DoesNotExist as e:
+            result = generate_result("1003", "tenant not exist", "租户{}不存在".format(tenant_name))
+        except Exception as e:
+            result = generate_error_result()
+            logger.exception(e)
+        return Response(result)
+
 
