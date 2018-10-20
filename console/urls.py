@@ -82,6 +82,7 @@ from console.views.team import ApplicantsView
 from console.views.app_manage import BatchDelete
 from console.views.app_manage import AgainDelete
 from console.views.team import TenantsView
+from console.views.config import ConfigGithubView, ConfigGitlabView, ConfigManageView, HubConfigView, FtpConfigView, ConfigCodeView
 
 
 urlpatterns = patterns(
@@ -522,6 +523,18 @@ urlpatterns = patterns(
     url(r'^enterprise/users$', AllUserView.as_view()),
     # 企业中心模糊查询团队
     url(r'^enterprise/tenants/query', TenantsView.as_view()),
+    # 企业中心github操作
+    url(r'^enterprise/github', ConfigGithubView.as_view()),
+    # 企业中心gitlab操作
+    url(r'^enterprise/gitlab', ConfigGitlabView.as_view()),
+    # 企业中心获取当前hub配置信息
+    url(r'^enterprise/hub-config', HubConfigView.as_view()),
+    # 企业中心获取当前ftp配置信息
+    url(r'^enterprise/ftp-config', FtpConfigView.as_view()),
+    # 企业中心git仓库对接
+    url(r'^enterprise/code/link$', ConfigCodeView.as_view()),
+    # 企业中心环境对接起停
+    url(r'^enterprise/manage$', ConfigManageView.as_view()),
     # 查看用户审核状态
     url(r'^user/applicants/status$', UserApplyStatusView.as_view()),
     # 用户申请某个团队

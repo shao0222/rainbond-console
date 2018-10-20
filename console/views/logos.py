@@ -1,18 +1,18 @@
 # -*- coding: utf8 -*-
-import datetime
 import logging
 import os
 
 from rest_framework.response import Response
 
 from backends.services.configservice import config_service
-from cadmin.models import ConsoleSysConfig
 from console.repositories.enterprise_repo import enterprise_repo
 from console.views.base import BaseApiView, AlowAnyApiView
 from www.utils.return_message import general_message, error_message
 from django.conf import settings
 from console.repositories.perm_repo import role_perm_repo
 from console.repositories.user_repo import user_repo
+from backends.services.exceptions import *
+
 logger = logging.getLogger("default")
 
 
@@ -112,32 +112,32 @@ class LogoView(BaseApiView):
             result = error_message(e.message)
         return Response(result)
 
-    # def post(self, request, *args, **kwargs):
-    #     """
-    #     添加logo
-    #     ---
-    #     parameters:
-    #         - name: logo
-    #           description: 图片
-    #           required: true
-    #           type: file
-    #           paramType: form
-    #
-    #     """
-    #     try:
-    #         code = 200
-    #         logo_url = config_service.upload_image(request)
-    #         data = dict()
-    #         data["logo"] = str(request.get_host()) + str(logo_url)
-    #         result = general_message(code, "success", "图片上传成功", bean=data)
-    #     except ParamsError as e:
-    #         code = 400
-    #         result = general_message(code, "params error", e.message)
-    #     except Exception as e:
-    #         code = 500
-    #         logger.exception(e)
-    #         result = error_message(e.message)
-    #     return Response(result, status=code)
+    def post(self, request, *args, **kwargs):
+        """
+        添加logo
+        ---
+        parameters:
+            - name: logo
+              description: 图片
+              required: true
+              type: file
+              paramType: form
+
+        """
+        try:
+            code = 200
+            logo_url = config_service.upload_image(request)
+            data = dict()
+            data["logo"] = str(request.get_host()) + str(logo_url)
+            result = general_message(code, "success", "图片上传成功", bean=data)
+        except ParamsError as e:
+            code = 400
+            result = general_message(code, "params error", e.message)
+        except Exception as e:
+            code = 500
+            logger.exception(e)
+            result = error_message(e.message)
+        return Response(result, status=code)
 
 
 class PhpConfigView(AlowAnyApiView):
