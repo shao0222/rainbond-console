@@ -287,7 +287,7 @@ class AppManageService(AppManageBase):
                                     service_source.extend_info = json.dumps(new_extend_info)
                                     service_source.save()
             except Exception as e:
-                logger.exception('===========000============>'.format(e))
+                logger.exception('===========000============>{0}'.format(e))
                 body["image_url"] = service.image
                 if service_source:
                     extend_info = json.loads(service_source.extend_info)

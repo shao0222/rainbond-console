@@ -341,3 +341,20 @@ class TeamUsableRegionView(BaseAPIView):
             logger.exception(e)
             result = generate_result("9999", "system error", "系统异常")
         return Response(result)
+
+
+class AllTeamCountView(BaseAPIView):
+    def get(self, request, *args, **kwargs):
+        """获取所有团队数量"""
+        try:
+            teams_num = Tenants.objects.all().count()
+            if not teams_num:
+                teams_num = None
+            bean = {"allteamscount": teams_num}
+            result = generate_result("0000", "success", "查询成功", bean=bean,)
+        except Exception as e:
+            logger.exception(e)
+            result = generate_error_result()
+        return Response(result)
+
+
